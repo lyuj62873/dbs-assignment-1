@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === THE BINDING OF ISAAC: REBIRTH — Dark dungeon roguelike, based on v3 8-bit === */
+    /*
+     * BoI Rebirth aesthetic:
+     *  - Dark grotesque pixel art
+     *  - Dungeon/basement stone floor texture
+     *  - Deep reds, purples, flesh tones, rotting greens
+     *  - Heart containers, item drops, stat counters
+     *  - Crude hand-drawn feel mixed with pixel art
+     *  - Tragic biblical horror meets dark humor
+     */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    :root {
+      --stone:    #1c1814;   /* dark stone floor */
+      --stone2:   #2a2320;   /* slightly lighter stone */
+      --stone3:   #382e29;   /* mortar between stones */
+      --blood-r:  #8b1a1a;   /* isaac's blood red */
+      --blood2:   #5c0f0f;
+      --tear:     #4a7fa5;   /* isaac's tears (blue) */
+      --gold:     #c89a2a;   /* coins / items */
+      --flesh:    #c47b4a;   /* skin/flesh tone */
+      --bone:     #d4c89a;
+      --rot:      #3d5a1a;   /* bile / sickly green */
+      --dim-txt:  #7a6050;
+      --bright:   #e8d4a0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { image-rendering: pixelated; }
+
+    body {
+      background: var(--stone);
+      color: var(--bright);
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: 7px;
+      line-height: 2;
+      min-height: 100vh;
+    }
+
+    /* ── Stone tile floor pattern ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.5) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.2) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(0,0,0,0.2) 2px, transparent 2px);
+      background-size: 64px 64px, 64px 64px, 16px 16px, 16px 16px;
+      background-color: var(--stone);
+    }
+
+    /* ── Blood stain in corner ── */
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: 0; right: 0;
+      width: 200px; height: 200px;
+      background: radial-gradient(ellipse at 100% 100%, rgba(139,26,26,0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── HUD header bar ── */
+    header {
+      background: #0f0c0a;
+      border-bottom: 4px solid var(--blood2);
+      padding: 16px 16px 12px;
+      position: relative;
+    }
+
+    .hud-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* Hearts (health display) */
+    .hearts {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+
+    .heart {
+      font-size: 14px;
+      color: var(--blood-r);
+      text-shadow: 0 0 4px var(--blood-r);
+    }
+
+    .heart.half { opacity: 0.4; }
+    .heart.soul { color: #888; text-shadow: none; }
+
+    .hud-title {
+      text-align: center;
+      flex: 1;
+    }
+
+    .hud-title h1 {
+      font-size: clamp(8px, 1.8vw, 14px);
+      color: var(--blood-r);
+      text-shadow: 2px 2px 0 #000, 0 0 12px rgba(139,26,26,0.5);
+      line-height: 1.6;
+    }
+
+    .hud-title .chapter-txt {
+      font-size: 6px;
+      color: var(--dim-txt);
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* Stat counters (coins / bombs / keys) */
+    .hud-stats {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stat-counter {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--bright);
+    }
+
+    .stat-icon { font-size: 12px; }
+
+    /* ── Mini dungeon map ── */
+    .dungeon-map-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 8px 0 0;
+    }
+
+    .dungeon-map {
+      display: grid;
+      grid-template-columns: repeat(5, 18px);
+      grid-template-rows: repeat(3, 14px);
+      gap: 2px;
+    }
+
+    .room {
+      background: var(--stone3);
+      border: 1px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .room.active { background: var(--bone); border-color: var(--bright); }
+    .room.visited { background: #3a3028; }
+    .room.empty { background: transparent; border-color: transparent; }
+    .room.boss { background: var(--blood2); border-color: var(--blood-r); }
+    .room.treasure { background: #4a3800; border-color: var(--gold); }
+
+    /* ── Nav ── */
+    nav {
+      background: #0f0c0a;
+      border-bottom: 2px solid var(--blood2);
+      padding: 8px 16px;
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      display: inline-block;
+      background: var(--stone2);
+      color: var(--dim-txt);
+      text-decoration: none;
+      font-size: 6px;
+      padding: 6px 10px;
+      border: 2px solid var(--stone3);
+      text-transform: uppercase;
+      transition: all 0.1s;
+    }
+
+    nav a:hover {
+      background: var(--blood2);
+      color: var(--bright);
+      border-color: var(--blood-r);
+      text-shadow: 0 0 4px var(--blood-r);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    .floor-label {
+      font-size: 8px;
+      color: var(--dim-txt);
+      text-align: center;
+      margin-bottom: 20px;
+      letter-spacing: 4px;
+    }
+    .floor-label::before { content: '[ '; }
+    .floor-label::after  { content: ' ]'; }
+
+    /* ── Item pickup grid ── */
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 4px;
+    }
+
+    /* Rare tiers change card borders */
+    .item-card[data-tier="1"] { --tier-c: #4a4060; --tier-glow: rgba(74,64,96,0.4); }
+    .item-card[data-tier="2"] { --tier-c: #5a3010; --tier-glow: rgba(90,48,16,0.4); }
+    .item-card[data-tier="3"] { --tier-c: var(--blood2); --tier-glow: rgba(139,26,26,0.4); }
+    .item-card[data-tier="4"] { --tier-c: #404a10; --tier-glow: rgba(64,74,16,0.3); }
+
+    .item-card {
+      background: #1a1410;
+      border: 3px solid var(--tier-c, var(--stone3));
+      padding: 0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.1s;
+    }
+
+    .item-card:hover {
+      box-shadow: 0 0 16px var(--tier-glow, rgba(0,0,0,0.5));
+      transform: translateY(-2px);
+    }
+
+    /* Item pedestal bar at top */
+    .item-pedestal {
+      background: #0f0c0a;
+      border-bottom: 2px solid var(--tier-c, var(--stone3));
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-icon {
+      font-size: 20px;
+      filter: sepia(0.4) brightness(0.85);
+      flex-shrink: 0;
+    }
+
+    .item-header { flex: 1; }
+
+    .item-quality {
+      font-size: 5px;
+      color: var(--dim-txt);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .item-card h3 {
+      font-size: 7px;
+      color: var(--bright);
+      text-shadow: 1px 1px 0 #000;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+
+    .item-body {
+      padding: 10px 12px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item-desc {
+      font-size: 6px;
+      color: var(--dim-txt);
+      line-height: 2.2;
+      flex: 1;
+      margin-bottom: 12px;
+    }
+
+    /* Stat-up/down icons (BoI style) */
+    .item-stats {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-up {
+      font-size: 5px;
+      background: rgba(60,100,20,0.4);
+      border: 1px solid var(--rot);
+      color: #8ac040;
+      padding: 2px 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-neut {
+      font-size: 5px;
+      background: rgba(60,50,20,0.4);
+      border: 1px solid #554010;
+      color: var(--gold);
+      padding: 2px 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Pickup button — item-chest style */
+    .pickup-btn {
+      display: block;
+      background: var(--tier-c, var(--stone3));
+      color: var(--bright);
+      text-decoration: none;
+      font-size: 6px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 8px;
+      text-align: center;
+      border: 2px solid rgba(255,255,255,0.08);
+      text-shadow: 1px 1px 0 #000;
+      transition: filter 0.15s;
+    }
+
+    .pickup-btn:hover { filter: brightness(1.3); }
+    .pickup-btn::before { content: '→ '; }
+
+    /* ── Boss floor divider ── */
+    .boss-divider {
+      margin: 32px 0;
+      border: none;
+      border-top: 3px solid var(--blood2);
+      position: relative;
+      text-align: center;
+    }
+
+    .boss-divider::after {
+      content: '☠ BOSS ROOM ☠';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--stone);
+      padding: 0 12px;
+      font-size: 6px;
+      color: var(--blood-r);
+      text-shadow: 0 0 6px var(--blood-r);
+      letter-spacing: 3px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #0f0c0a;
+      border-top: 4px solid var(--blood2);
+      padding: 16px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 8px;
+      color: var(--blood-r);
+      text-shadow: 0 0 8px rgba(139,26,26,0.5);
+      margin-bottom: 6px;
+    }
+
+    footer p {
+      font-size: 5px;
+      color: var(--dim-txt);
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HUD ── -->
+  <header>
+    <div class="hud-top">
+
+      <!-- Hearts -->
+      <div class="hearts">
+        <span class="heart">♥</span>
+        <span class="heart">♥</span>
+        <span class="heart">♥</span>
+        <span class="heart half">♥</span>
+        <span class="heart soul">♡</span>
+        <span class="heart soul">♡</span>
+      </div>
+
+      <!-- Title -->
+      <div class="hud-title">
+        <h1>Fun Free<br>Web Games Hub</h1>
+        <span class="chapter-txt">★ The Basement I ★ — 15 Items Available</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="hud-stats">
+        <div class="stat-counter"><span class="stat-icon">🪙</span> 99</div>
+        <div class="stat-counter"><span class="stat-icon">💣</span> 05</div>
+        <div class="stat-counter"><span class="stat-icon">🗝️</span> 03</div>
+      </div>
+
+    </div>
+
+    <!-- Mini dungeon map -->
+    <div class="dungeon-map-wrap">
+      <div class="dungeon-map">
+        <div class="room empty"></div>
+        <div class="room visited"></div>
+        <div class="room visited"></div>
+        <div class="room empty"></div>
+        <div class="room empty"></div>
+        <div class="room visited"></div>
+        <div class="room active"></div>  <!-- you are here -->
+        <div class="room visited"></div>
+        <div class="room treasure"></div>
+        <div class="room empty"></div>
+        <div class="room empty"></div>
+        <div class="room visited"></div>
+        <div class="room boss"></div>
+        <div class="room empty"></div>
+        <div class="room empty"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#">🧩 Puzzle</a>
+    <a href="#">♟️ Strategy</a>
+    <a href="#">👾 Arcade</a>
+    <a href="#">🔤 Word</a>
+    <a href="#">🃏 Classic</a>
+    <a href="#">⌨️ Skill</a>
+  </nav>
+
+  <main>
+    <div class="floor-label">The Basement I — Item Room — Pick Up Your Curse</div>
+
+    <div class="item-grid">
+
+      <div class="item-card" data-tier="2">
+        <div class="item-pedestal">
+          <span class="item-icon">💣</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Minesweeper</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Find all mines or die trying. Logic is thine only weapon. Flag well.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ LOGIC</span>
+            <span class="stat-neut">~ LUCK</span>
+          </div>
+          <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="3">
+        <div class="item-pedestal">
+          <span class="item-icon">🔤</span>
+          <div class="item-header">
+            <span class="item-quality">Daily Item</span>
+            <h3>Wordle</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Five letters. Six tries. Guess the word or wander these halls forever.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ VOCAB</span>
+            <span class="stat-up">+ WISDOM</span>
+          </div>
+          <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="1">
+        <div class="item-pedestal">
+          <span class="item-icon">🔢</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Sudoku</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Numbers 1 through 9. Nowhere to hide. Logic alone fills the grid.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ LOGIC</span>
+            <span class="stat-up">+ TEARS</span>
+          </div>
+          <a href="https://sudoku.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="4">
+        <div class="item-pedestal">
+          <span class="item-icon">♟️</span>
+          <div class="item-header">
+            <span class="item-quality">Active Item</span>
+            <h3>Chess</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">The King must not fall. Ancient war played on 64 forsaken squares.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ STRATEGY</span>
+            <span class="stat-neut">~ SPEED</span>
+          </div>
+          <a href="https://www.chess.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="2">
+        <div class="item-pedestal">
+          <span class="item-icon">🧮</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>2048</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Numbers merge. Board fills. Reach 2048 or watch it all collapse.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ DAMAGE</span>
+            <span class="stat-neut">~ SPEED</span>
+          </div>
+          <a href="https://2048game.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="3">
+        <div class="item-pedestal">
+          <span class="item-icon">🟦</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Tetris</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="game-desc">Blocks fall from on high. Stack until the sky closes in on thee.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ SPEED</span>
+            <span class="stat-up">+ RANGE</span>
+          </div>
+          <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="1">
+        <div class="item-pedestal">
+          <span class="item-icon">🃏</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Solitaire</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Lay the cards in their ordained order. One by one. Alone.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ LUCK</span>
+            <span class="stat-neut">~ TEARS</span>
+          </div>
+          <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="2">
+        <div class="item-pedestal">
+          <span class="item-icon">🐍</span>
+          <div class="item-header">
+            <span class="item-quality">Familiar</span>
+            <h3>Snake</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">A serpent grows hungrier with every meal. It will devour itself in the end.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ SIZE</span>
+            <span class="stat-up">+ DAMAGE</span>
+          </div>
+          <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="1">
+        <div class="item-pedestal">
+          <span class="item-icon">📰</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Crossword</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Fill the blank squares with what little knowledge remains in thee.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ VOCAB</span>
+            <span class="stat-up">+ LOGIC</span>
+          </div>
+          <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="4">
+        <div class="item-pedestal">
+          <span class="item-icon">🀄</span>
+          <div class="item-header">
+            <span class="item-quality">Active Item</span>
+            <h3>Mahjong</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">An ancient tile pyramid. Match pairs until the board is clean of sin.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ WISDOM</span>
+            <span class="stat-neut">~ SPEED</span>
+          </div>
+          <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="3">
+        <div class="item-pedestal">
+          <span class="item-icon">👾</span>
+          <div class="item-header">
+            <span class="item-quality">Familiar</span>
+            <h3>Pac-Man</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">A round yellow familiar that devours everything in its path. Fear the ghosts.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ SPEED</span>
+            <span class="stat-up">+ CONSUMABLES</span>
+          </div>
+          <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="2">
+        <div class="item-pedestal">
+          <span class="item-icon">🔡</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Scrabble</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Spelling is power. Each letter placed is a tribute to the board's hunger.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ VOCAB</span>
+            <span class="stat-neut">~ LUCK</span>
+          </div>
+          <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="3">
+        <div class="item-pedestal">
+          <span class="item-icon">⌨️</span>
+          <div class="item-header">
+            <span class="item-quality">Active Item</span>
+            <h3>TypeRacer</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Type faster than the others. They are already ahead. They always are.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ TEARS RATE</span>
+            <span class="stat-up">+ SPEED</span>
+          </div>
+          <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="1">
+        <div class="item-pedestal">
+          <span class="item-icon">🎴</span>
+          <div class="item-header">
+            <span class="item-quality">Passive Item</span>
+            <h3>Memory Match</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">Thou must remember what was shown. Thou will not remember. Flip anyway.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ LUCK</span>
+            <span class="stat-neut">~ WISDOM</span>
+          </div>
+          <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+      <div class="item-card" data-tier="4">
+        <div class="item-pedestal">
+          <span class="item-icon">🎱</span>
+          <div class="item-header">
+            <span class="item-quality">Active Item</span>
+            <h3>Pinball</h3>
+          </div>
+        </div>
+        <div class="item-body">
+          <p class="item-desc">A silver ball launched into chaos. Flippers, targets, and the void below.</p>
+          <div class="item-stats">
+            <span class="stat-up">+ DAMAGE</span>
+            <span class="stat-up">+ LUCK</span>
+          </div>
+          <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="pickup-btn">Pick Up</a>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="boss-divider">
+
+  </main>
+
+  <footer>
+    <div class="footer-logo">Fun Free Web Games Hub</div>
+    <p>All games are external links · No tracking · No downloads · V15 · Binding of Isaac Edition</p>
+  </footer>
+
+</body>
+</html>

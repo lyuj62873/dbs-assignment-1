@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === BRUTALIST × BOLD MAGAZINE × SWISS GRID — v1 + v8 + v10 === */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+
+    :root {
+      --black:  #080808;
+      --white:  #f7f6f2;
+      --red:    #e8000a;
+      --blue:   #0038b8;
+      --yellow: #f5c200;
+      --gray-1: #1a1a1a;
+      --gray-2: #444;
+      --gray-3: #888;
+      --gray-4: #ccc;
+      --gray-5: #ebebeb;
+      --gap:    3px;         /* brutalist gap between grid cells */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--black);
+      font-family: 'IBM Plex Sans', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    /* ── Colour-band header bar (Swiss × Brutalist) ── */
+    .colour-band {
+      display: grid;
+      grid-template-columns: 4fr 3fr 2fr 1fr;
+      height: 10px;
+    }
+    .cb-r { background: var(--red); }
+    .cb-b { background: var(--blue); }
+    .cb-y { background: var(--yellow); }
+    .cb-w { background: var(--white); }
+
+    /* ── Masthead ── */
+    header {
+      background: var(--black);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--gap);
+    }
+
+    .masthead-title {
+      background: var(--white);
+      padding: 40px 36px;
+      border-right: var(--gap) solid var(--black);
+    }
+
+    .overline {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+
+    .masthead-title h1 {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: clamp(3.5rem, 7vw, 7rem);
+      line-height: 0.88;
+      letter-spacing: 1px;
+      color: var(--black);
+    }
+
+    .masthead-meta {
+      background: var(--red);
+      padding: 40px 32px;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .meta-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    .meta-sub {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-top: 8px;
+    }
+
+    .meta-specs {
+      margin-top: auto;
+      padding-top: 20px;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.25);
+      padding: 6px 0;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .spec-row span:last-child { opacity: 0.55; }
+
+    /* ── Nav strip (Swiss rule-based) ── */
+    nav {
+      background: var(--black);
+      display: flex;
+      gap: var(--gap);
+    }
+
+    nav a {
+      display: block;
+      background: var(--gray-5);
+      padding: 11px 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.1s, background 0.1s;
+    }
+
+    nav a:hover { background: var(--yellow); border-bottom-color: var(--black); }
+
+    .nav-marker {
+      background: var(--blue);
+      padding: 11px 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    /* ── Feature strip (Magazine hero) ── */
+    .feature-strip {
+      background: var(--black);
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: var(--gap);
+    }
+
+    .feature-hero {
+      background: var(--gray-1);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 260px;
+    }
+
+    .feature-hero::before {
+      content: '🔤';
+      position: absolute;
+      top: 20px; right: 24px;
+      font-size: 6rem;
+      opacity: 0.12;
+    }
+
+    .hero-chip {
+      display: inline-block;
+      background: var(--red);
+      color: var(--white);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      margin-bottom: 14px;
+      align-self: flex-start;
+    }
+
+    .feature-hero h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.2rem;
+      color: var(--white);
+      line-height: 0.95;
+      margin-bottom: 10px;
+    }
+
+    .feature-hero p {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--gray-4);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      text-decoration: none;
+    }
+    .hero-link::after { content: '→'; }
+    .hero-link:hover { color: var(--white); }
+
+    .feature-side {
+      background: var(--white);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-side .side-bg {
+      position: absolute;
+      top: 12px; right: 14px;
+      font-size: 4rem;
+      opacity: 0.08;
+    }
+
+    .side-chip {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--blue);
+      border: 1.5px solid var(--blue);
+      padding: 3px 8px;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+
+    .feature-side h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .feature-side p {
+      font-size: 11px;
+      color: var(--gray-2);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .side-link {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 2px solid var(--red);
+      align-self: flex-start;
+      padding-bottom: 1px;
+    }
+
+    .side-link:hover { color: var(--red); }
+
+    /* ── Index label ── */
+    .index-bar {
+      background: var(--black);
+      padding: var(--gap) 0 0;
+    }
+
+    .index-label {
+      background: var(--white);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .index-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+    }
+
+    .index-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--gray-4);
+    }
+
+    /* ── Game table — Swiss grid, Brutalist gap ── */
+    .game-mosaic {
+      background: var(--black);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--gap);
+      padding: var(--gap);
+    }
+
+    .game-tile {
+      background: var(--white);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-tile:hover { background: var(--gray-5); }
+
+    /* Bold magazine number (v8) */
+    .tile-num {
+      position: absolute;
+      top: 10px; right: 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--gray-4);
+      line-height: 1;
+    }
+
+    /* Swiss colour rule strip (v10) */
+    .tile-rule {
+      width: 100%;
+      height: 3px;
+      margin-bottom: 16px;
+    }
+
+    .tile-icon {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .tile-badge {
+      display: inline-block;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1.5px solid currentColor;
+      padding: 2px 7px;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+
+    .badge-puzzle   { color: var(--blue); }
+    .badge-word     { color: var(--red); }
+    .badge-strategy { color: #005522; }
+    .badge-arcade   { color: #c04000; }
+    .badge-classic  { color: #550088; }
+    .badge-skill    { color: #005599; }
+
+    .game-tile h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .tile-desc {
+      font-size: 11px;
+      color: var(--gray-2);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .tile-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--black);
+      text-decoration: none;
+      align-self: flex-start;
+    }
+    .tile-link::after { content: '→'; }
+    .tile-link:hover { color: var(--red); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--black);
+      padding: var(--gap) 0 0;
+    }
+
+    .footer-inner {
+      background: var(--white);
+      padding: 18px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+    }
+    .footer-logo span { color: var(--red); }
+
+    .footer-note {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+    }
+
+    .footer-version {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    @media (max-width: 900px) {
+      .game-mosaic { grid-template-columns: repeat(2, 1fr); }
+      .feature-strip { grid-template-columns: 1fr; }
+      .masthead-title h1 { font-size: 3rem; }
+    }
+    @media (max-width: 560px) {
+      .game-mosaic { grid-template-columns: 1fr; }
+      header { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="colour-band">
+    <div class="cb-r"></div>
+    <div class="cb-b"></div>
+    <div class="cb-y"></div>
+    <div class="cb-w"></div>
+  </div>
+
+  <header>
+    <div class="masthead-title">
+      <span class="overline">Free · Browser · Instant</span>
+      <h1>Fun<br>Free<br>Web<br>Games<br>Hub</h1>
+    </div>
+    <div class="masthead-meta">
+      <div>
+        <div class="meta-headline">15<br>Games</div>
+        <div class="meta-sub">No Download Required</div>
+      </div>
+      <div class="meta-specs">
+        <div class="spec-row"><span>Price</span><span>Free</span></div>
+        <div class="spec-row"><span>Platform</span><span>Browser</span></div>
+        <div class="spec-row"><span>Downloads</span><span>Zero</span></div>
+        <div class="spec-row"><span>Accounts</span><span>Optional</span></div>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <span class="nav-marker">Filter</span>
+    <a href="#">All</a>
+    <a href="#">Puzzle</a>
+    <a href="#">Strategy</a>
+    <a href="#">Arcade</a>
+    <a href="#">Word</a>
+    <a href="#">Classic</a>
+    <a href="#">Skill</a>
+  </nav>
+
+  <div class="feature-strip">
+    <div class="feature-hero">
+      <span class="hero-chip">Editor's Pick</span>
+      <h2>Wordle</h2>
+      <p>The New York Times' daily five-letter word puzzle. Six guesses to crack the code — millions play every morning.</p>
+      <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="hero-link">Play Now</a>
+    </div>
+    <div class="feature-side">
+      <span class="side-bg">♟️</span>
+      <span class="side-chip">Strategy</span>
+      <h3>Chess</h3>
+      <p>Battle AI or live opponents on the world's #1 chess platform. Rated or casual.</p>
+      <a href="https://www.chess.com/" target="_blank" rel="noopener" class="side-link">Play</a>
+    </div>
+    <div class="feature-side">
+      <span class="side-bg">🟦</span>
+      <span class="side-chip">Arcade</span>
+      <h3>Tetris</h3>
+      <p>The official Tetris in-browser. Stack tetrominoes, clear lines, beat the clock.</p>
+      <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="side-link">Play</a>
+    </div>
+  </div>
+
+  <div class="index-bar">
+    <div class="index-label">
+      <span class="index-title">Full Game Index</span>
+      <span class="index-count">15</span>
+    </div>
+  </div>
+
+  <div class="game-mosaic">
+
+    <div class="game-tile">
+      <span class="tile-num">01</span>
+      <div class="tile-rule" style="background:var(--blue);"></div>
+      <span class="tile-icon">💣</span>
+      <span class="tile-badge badge-puzzle">Puzzle</span>
+      <h3>Minesweeper</h3>
+      <p class="tile-desc">Logic-based mine detection. Reveal safe cells. Flag all hidden mines.</p>
+      <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">02</span>
+      <div class="tile-rule" style="background:var(--blue);"></div>
+      <span class="tile-icon">🔢</span>
+      <span class="tile-badge badge-puzzle">Puzzle</span>
+      <h3>Sudoku</h3>
+      <p class="tile-desc">Fill 9×9 grid with digits 1–9. Pure logic, no arithmetic.</p>
+      <a href="https://sudoku.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">03</span>
+      <div class="tile-rule" style="background:var(--blue);"></div>
+      <span class="tile-icon">🧮</span>
+      <span class="tile-badge badge-puzzle">Puzzle</span>
+      <h3>2048</h3>
+      <p class="tile-desc">Merge tiles on 4×4 grid. Reach 2048 — then go further.</p>
+      <a href="https://2048game.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">04</span>
+      <div class="tile-rule" style="background:#005522;"></div>
+      <span class="tile-icon">🀄</span>
+      <span class="tile-badge badge-strategy">Strategy</span>
+      <h3>Mahjong</h3>
+      <p class="tile-desc">Match pairs of free tiles to clear the ancient pyramid board.</p>
+      <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">05</span>
+      <div class="tile-rule" style="background:var(--red);"></div>
+      <span class="tile-icon">📰</span>
+      <span class="tile-badge badge-word">Word</span>
+      <h3>Crossword</h3>
+      <p class="tile-desc">Classic grid word puzzle. Solve clues across and down.</p>
+      <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">06</span>
+      <div class="tile-rule" style="background:var(--red);"></div>
+      <span class="tile-icon">🔡</span>
+      <span class="tile-badge badge-word">Word</span>
+      <h3>Scrabble</h3>
+      <p class="tile-desc">Build high-scoring words. Exploit double and triple bonus squares.</p>
+      <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">07</span>
+      <div class="tile-rule" style="background:#c04000;"></div>
+      <span class="tile-icon">🐍</span>
+      <span class="tile-badge badge-arcade">Arcade</span>
+      <h3>Snake</h3>
+      <p class="tile-desc">Eat, grow, avoid your own tail. Pure browser reflex game.</p>
+      <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">08</span>
+      <div class="tile-rule" style="background:#c04000;"></div>
+      <span class="tile-icon">👾</span>
+      <span class="tile-badge badge-arcade">Arcade</span>
+      <h3>Pac-Man</h3>
+      <p class="tile-desc">Eat dots, dodge four ghosts. Power pellets turn the tables.</p>
+      <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">09</span>
+      <div class="tile-rule" style="background:#c04000;"></div>
+      <span class="tile-icon">🎱</span>
+      <span class="tile-badge badge-arcade">Arcade</span>
+      <h3>Pinball</h3>
+      <p class="tile-desc">Flipper physics, targets, multi-ball. Rack up massive scores.</p>
+      <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">10</span>
+      <div class="tile-rule" style="background:#550088;"></div>
+      <span class="tile-icon">🃏</span>
+      <span class="tile-badge badge-classic">Classic</span>
+      <h3>Solitaire</h3>
+      <p class="tile-desc">Klondike card stacking. Move all cards to foundation piles.</p>
+      <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">11</span>
+      <div class="tile-rule" style="background:#550088;"></div>
+      <span class="tile-icon">🎴</span>
+      <span class="tile-badge badge-classic">Classic</span>
+      <h3>Memory Match</h3>
+      <p class="tile-desc">Flip cards, memorize positions, find all matching pairs.</p>
+      <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+    <div class="game-tile">
+      <span class="tile-num">12</span>
+      <div class="tile-rule" style="background:#005599;"></div>
+      <span class="tile-icon">⌨️</span>
+      <span class="tile-badge badge-skill">Skill</span>
+      <h3>TypeRacer</h3>
+      <p class="tile-desc">Race live players by typing. Measure and improve your WPM.</p>
+      <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="tile-link">Play</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">Fun Free <span>Web</span> Games Hub</div>
+      <div class="footer-note">All games external · Free · No download · No tracking</div>
+      <div class="footer-version">V12 · Brutalist × Magazine × Swiss</div>
+    </div>
+  </footer>
+
+</body>
+</html>

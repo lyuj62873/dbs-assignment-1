@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === RETURN OF THE OBRA DINN — 1-bit dither-punk logbook, based on v4 Newspaper === */
+    /*
+     * Obra Dinn aesthetic:
+     *  - Strictly two colours (black + off-white/amber)
+     *  - Bayer dither / cross-hatch patterns via CSS
+     *  - Maritime logbook / death register layout
+     *  - Monospace + old-Macintosh serif fonts
+     *  - Stark, high-contrast, archival mood
+     */
+
+    /* Colour set: the amber "Macintosh Plus" palette */
+    :root {
+      --ink:    #1a1208;   /* deep almost-black amber-ink */
+      --paper:  #d4c89a;   /* aged parchment */
+      --mid:    #8a7a50;   /* mid dither tone */
+      --bright: #efe0a8;   /* highlight paper */
+      --rule:   #6a5c36;   /* ruled lines */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { image-rendering: pixelated; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── 1-bit dither overlay (Bayer 2×2 checkerboard) ── */
+    /* Fakes the classic ordered-dither noise across the page */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' x='0' y='1' fill='%231a1208' opacity='.04'/%3E%3Crect width='1' height='1' x='2' y='3' fill='%231a1208' opacity='.04'/%3E%3C/svg%3E");
+      background-size: 4px 4px;
+    }
+
+    /* Hatching on dark sections */
+    .hatch {
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          transparent 0px, transparent 3px,
+          rgba(26,18,8,0.07) 3px, rgba(26,18,8,0.07) 4px
+        );
+    }
+
+    /* ── Masthead / cover page ── */
+    header {
+      border-bottom: 4px solid var(--ink);
+      padding: 0;
+    }
+
+    .logbook-spine {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .masthead-body {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: stretch;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .masthead-text {
+      padding: 36px 32px;
+      border-right: 2px solid var(--ink);
+    }
+
+    .masthead-stamp {
+      font-size: 9px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--mid);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    header h1 {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border-bottom: 3px double var(--ink);
+      padding-bottom: 12px;
+    }
+
+    .masthead-lead {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.8;
+      max-width: 480px;
+      font-style: italic;
+    }
+
+    .ship-manifest {
+      padding: 20px 24px;
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .manifest-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 11px;
+    }
+
+    .manifest-row:last-child { border-bottom: none; }
+    .manifest-key { color: var(--mid); text-transform: uppercase; letter-spacing: 1px; }
+    .manifest-val { font-weight: 700; }
+
+    /* ── Chapter heading bar ── */
+    .chapter-bar {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 10px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    /* ── Death register table (main game index) ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    .register-title {
+      margin-top: 32px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .register-title h2 {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .reg-rule {
+      flex: 1;
+      height: 2px;
+      background: var(--ink);
+    }
+
+    /* Logbook-style entry table */
+    .register-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Courier New', monospace;
+    }
+
+    .register-table thead tr {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .register-table th {
+      padding: 8px 16px;
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-align: left;
+      font-weight: 400;
+      border-right: 1px solid var(--mid);
+    }
+
+    .register-table th:last-child { border-right: none; }
+
+    .register-table tbody tr {
+      border-bottom: 1px solid var(--rule);
+      cursor: default;
+    }
+
+    .register-table tbody tr:nth-child(even) {
+      background: rgba(26,18,8,0.04);
+    }
+
+    /* Dither row highlight */
+    .register-table tbody tr:hover {
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent 0px, transparent 2px,
+        rgba(26,18,8,0.06) 2px, rgba(26,18,8,0.06) 3px
+      );
+    }
+
+    .register-table td {
+      padding: 12px 16px;
+      font-size: 12px;
+      vertical-align: middle;
+      border-right: 1px solid rgba(106,92,54,0.25);
+    }
+
+    .register-table td:last-child { border-right: none; }
+
+    .td-entry { color: var(--mid); font-size: 10px; letter-spacing: 2px; }
+    .td-icon  { font-size: 1.3rem; filter: grayscale(1) sepia(0.6); }
+    .td-name  { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+
+    .fate-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid var(--ink);
+      padding: 2px 8px;
+      background: transparent;
+    }
+
+    .fate-known   { background: var(--ink); color: var(--paper); }
+    .fate-unknown { color: var(--mid); border-color: var(--rule); font-style: italic; }
+
+    .td-desc {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 340px;
+    }
+
+    .play-link {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 2px solid var(--ink);
+      padding-bottom: 1px;
+    }
+
+    .play-link::before { content: '→ '; }
+    .play-link:hover { color: var(--mid); border-color: var(--mid); }
+
+    /* ── Newspaper-style column notes (from v4) ── */
+    .footnote-section {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 0;
+      border: 2px solid var(--ink);
+    }
+
+    .footnote-main {
+      padding: 24px;
+      border-right: 2px solid var(--ink);
+    }
+
+    .footnote-eyebrow {
+      font-size: 9px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--mid);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .footnote-main h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+
+    .footnote-main p {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--mid);
+      line-height: 1.8;
+    }
+
+    .footnote-sidebar {
+      padding: 24px;
+    }
+
+    .sidebar-entry {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 11px;
+    }
+    .sidebar-entry:last-child { border-bottom: none; }
+    .sidebar-entry strong { display: block; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; }
+    .sidebar-entry span { color: var(--mid); font-style: italic; }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 4px double var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    footer .logo { font-weight: 700; font-size: 12px; letter-spacing: 4px; }
+    footer span  { opacity: 0.5; }
+
+    @media (max-width: 800px) {
+      .footnote-section { grid-template-columns: 1fr; }
+      .masthead-body    { grid-template-columns: 1fr; }
+      .ship-manifest    { border-top: 2px solid var(--ink); }
+      .register-table   { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Logbook spine bar ── -->
+  <div class="logbook-spine hatch">
+    <span>The Register of Free Diversions</span>
+    <span>Est. 2026 — Vol. I</span>
+    <span>Entries: 15</span>
+  </div>
+
+  <header>
+    <div class="masthead-body">
+      <div class="masthead-text">
+        <span class="masthead-stamp">★ Authenticated Record ★</span>
+        <h1>Fun Free<br>Web Games Hub</h1>
+        <p class="masthead-lead">
+          A complete register of fifteen diversions, freely accessible through any browser.
+          No coin required. No journey needed. Each entry herein has been verified and found to be
+          genuinely without cost. The fates of all fifteen games are known.
+        </p>
+      </div>
+      <div class="ship-manifest">
+        <div class="manifest-row">
+          <span class="manifest-key">Entries</span>
+          <span class="manifest-val">15</span>
+        </div>
+        <div class="manifest-row">
+          <span class="manifest-key">Cost</span>
+          <span class="manifest-val">None</span>
+        </div>
+        <div class="manifest-row">
+          <span class="manifest-key">Download</span>
+          <span class="manifest-val">Not Required</span>
+        </div>
+        <div class="manifest-row">
+          <span class="manifest-key">Platform</span>
+          <span class="manifest-val">Browser</span>
+        </div>
+        <div class="manifest-row">
+          <span class="manifest-key">Edition</span>
+          <span class="manifest-val">V14</span>
+        </div>
+        <div class="manifest-row">
+          <span class="manifest-key">Style</span>
+          <span class="manifest-val">Obra Dinn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chapter-bar">
+      <span>Chapter I — The Register</span>
+      <span>Puzzle &nbsp;·&nbsp; Strategy &nbsp;·&nbsp; Arcade &nbsp;·&nbsp; Word &nbsp;·&nbsp; Classic &nbsp;·&nbsp; Skill</span>
+    </div>
+  </header>
+
+  <main>
+
+    <div class="register-title">
+      <h2>Complete Game Registry</h2>
+      <div class="reg-rule"></div>
+    </div>
+
+    <table class="register-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th></th>
+          <th>Name</th>
+          <th>Classification</th>
+          <th>Fate</th>
+          <th>Account</th>
+          <th>Open</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td class="td-entry">I</td>
+          <td class="td-icon">💣</td>
+          <td class="td-name">Minesweeper</td>
+          <td><span class="fate-tag fate-known">Puzzle</span></td>
+          <td class="td-desc">Uncover cells, flag mines. One wrong step ends it.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">II</td>
+          <td class="td-icon">🔤</td>
+          <td class="td-name">Wordle</td>
+          <td><span class="fate-tag fate-known">Word</span></td>
+          <td class="td-desc">Five letters. Six guesses. The word is always known — in the end.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">III</td>
+          <td class="td-icon">🔢</td>
+          <td class="td-name">Sudoku</td>
+          <td><span class="fate-tag fate-known">Puzzle</span></td>
+          <td class="td-desc">Fill the grid with numbers 1 to 9. Logic is the only instrument.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">IV</td>
+          <td class="td-icon">♟️</td>
+          <td class="td-name">Chess</td>
+          <td><span class="fate-tag fate-known">Strategy</span></td>
+          <td class="td-desc">The ancient war of kings. One player's fate is always sealed.</td>
+          <td class="td-entry">Optional</td>
+          <td><a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">V</td>
+          <td class="td-icon">🧮</td>
+          <td class="td-name">2048</td>
+          <td><span class="fate-tag fate-known">Puzzle</span></td>
+          <td class="td-desc">Numbers merge and multiply until the board cannot bear more.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://2048game.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">VI</td>
+          <td class="td-icon">🟦</td>
+          <td class="td-name">Tetris</td>
+          <td><span class="fate-tag fate-known">Arcade</span></td>
+          <td class="td-desc">Shapes fall without cessation. The grid fills. It always fills.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">VII</td>
+          <td class="td-icon">🃏</td>
+          <td class="td-name">Solitaire</td>
+          <td><span class="fate-tag fate-known">Classic</span></td>
+          <td class="td-desc">52 cards sorted in solitude. The house takes its cut regardless.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">VIII</td>
+          <td class="td-icon">🐍</td>
+          <td class="td-name">Snake</td>
+          <td><span class="fate-tag fate-known">Arcade</span></td>
+          <td class="td-desc">It grows with each meal. The wall was always there.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">IX</td>
+          <td class="td-icon">📰</td>
+          <td class="td-name">Crossword</td>
+          <td><span class="fate-tag fate-known">Word</span></td>
+          <td class="td-desc">Clues across, clues down. Every blank square shall be filled.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">X</td>
+          <td class="td-icon">🀄</td>
+          <td class="td-name">Mahjong</td>
+          <td><span class="fate-tag fate-known">Strategy</span></td>
+          <td class="td-desc">A pyramid of tiles awaits. Pair by pair, they vanish into nothing.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">XI</td>
+          <td class="td-icon">👾</td>
+          <td class="td-name">Pac-Man</td>
+          <td><span class="fate-tag fate-known">Arcade</span></td>
+          <td class="td-desc">The maze is known. The ghosts are not. Neither is the outcome.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">XII</td>
+          <td class="td-icon">🔡</td>
+          <td class="td-name">Scrabble</td>
+          <td><span class="fate-tag fate-known">Word</span></td>
+          <td class="td-desc">Letters assigned by chance. Worth is decided by placement.</td>
+          <td class="td-entry">Optional</td>
+          <td><a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">XIII</td>
+          <td class="td-icon">⌨️</td>
+          <td class="td-name">TypeRacer</td>
+          <td><span class="fate-tag fate-known">Skill</span></td>
+          <td class="td-desc">Words transcribed under duress. Speed is the only mercy offered.</td>
+          <td class="td-entry">Optional</td>
+          <td><a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">XIV</td>
+          <td class="td-icon">🎴</td>
+          <td class="td-name">Memory Match</td>
+          <td><span class="fate-tag fate-unknown">Classic</span></td>
+          <td class="td-desc">Cards face down. Their positions known only for a moment.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+        <tr>
+          <td class="td-entry">XV</td>
+          <td class="td-icon">🎱</td>
+          <td class="td-name">Pinball</td>
+          <td><span class="fate-tag fate-known">Arcade</span></td>
+          <td class="td-desc">The ball obeys physics. The score obeys effort. Both end the same.</td>
+          <td class="td-entry">Not Required</td>
+          <td><a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Newspaper-style annotation (from v4) -->
+    <div class="footnote-section" style="margin-top:40px;">
+      <div class="footnote-main hatch">
+        <span class="footnote-eyebrow">Curator's Note</span>
+        <h3>On the Nature of<br>These Diversions</h3>
+        <p>
+          Each of the fifteen games recorded herein may be reached through an ordinary browser,
+          without the need for installation, payment, or credential. The fates of twelve are
+          known with certainty. Two require an account at the player's discretion. One fate
+          — Memory Match — remains open, as the board changes with each sitting.
+          All links point outward. This register keeps no record of your visits.
+        </p>
+      </div>
+      <div class="footnote-sidebar">
+        <div class="sidebar-entry">
+          <strong>Classification: Puzzle</strong>
+          <span>Minesweeper, Sudoku, 2048</span>
+        </div>
+        <div class="sidebar-entry">
+          <strong>Classification: Arcade</strong>
+          <span>Tetris, Snake, Pac-Man, Pinball</span>
+        </div>
+        <div class="sidebar-entry">
+          <strong>Classification: Word</strong>
+          <span>Wordle, Crossword, Scrabble</span>
+        </div>
+        <div class="sidebar-entry">
+          <strong>Classification: Strategy</strong>
+          <span>Chess, Mahjong</span>
+        </div>
+        <div class="sidebar-entry">
+          <strong>Classification: Classic</strong>
+          <span>Solitaire, Memory Match</span>
+        </div>
+        <div class="sidebar-entry">
+          <strong>Classification: Skill</strong>
+          <span>TypeRacer</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="hatch">
+    <span class="logo">Fun Free Web Games Hub</span>
+    <span>All games are external links · No tracking · No downloads</span>
+    <span>V14 · Obra Dinn Edition</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAULTTEC-OS // FFWG-HUB v16</title>
+  <style>
+    /* === FALLOUT 4 PIP-BOY × TERMINAL — v6 Terminal + Pip-Boy interface === */
+    /*
+     * Pip-Boy aesthetic:
+     *  - Green phosphor monochrome CRT on black
+     *  - Primary: #00EE00 / #1AFF80 on #000
+     *  - CRT scanlines + phosphor glow
+     *  - Vault-Tec retro-futuristic 1950s corporate branding
+     *  - Tab-based navigation (STAT / GAMES / DATA / MAP / RADIO)
+     *  - Utilitarian, data-dense, weathered
+     *  + Terminal hacker elements: ASCII art, boot sequence, table output
+     */
+
+    :root {
+      --pip:      #1aff80;   /* Fallout 4 default phosphor green */
+      --pip-dim:  #0a9940;   /* dimmer green */
+      --pip-dark: #064020;   /* very dark green bg tones */
+      --pip-glow: rgba(26,255,128,0.18);
+      --bg:       #000000;
+      --bg2:      #030d06;
+      --amber:    #ffb000;   /* amber warning colour */
+      --red-pip:  #ff3020;   /* radiation / danger */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--pip);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── CRT scanlines ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.12) 2px,
+        rgba(0,0,0,0.12) 4px
+      );
+    }
+
+    /* ── Phosphor vignette ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+      background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+    }
+
+    /* ── Pip-Boy outer chrome frame ── */
+    .pipboy-frame {
+      max-width: 1100px;
+      margin: 0 auto;
+      border: 2px solid var(--pip-dim);
+      box-shadow: 0 0 30px var(--pip-glow), inset 0 0 20px rgba(0,0,0,0.5);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Vault-Tec header ── */
+    .vt-header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--pip-dim);
+      padding: 12px 20px 0;
+    }
+
+    /* Boot/brand line */
+    .vt-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .vt-logo {
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      color: var(--pip-dim);
+    }
+
+    .vt-logo strong {
+      display: block;
+      font-size: 1.1rem;
+      letter-spacing: 6px;
+      color: var(--pip);
+      text-shadow: 0 0 12px var(--pip);
+      margin-bottom: 2px;
+    }
+
+    .vt-system {
+      text-align: right;
+      font-size: 0.6rem;
+      color: var(--pip-dim);
+      letter-spacing: 1px;
+    }
+
+    .vt-system .ok { color: var(--pip); }
+    .vt-system .warn { color: var(--amber); }
+    .vt-system .rad  { color: var(--red-pip); }
+
+    /* Status bar */
+    .status-bar {
+      display: flex;
+      gap: 24px;
+      padding: 6px 0 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-seg { display: flex; align-items: center; gap: 8px; font-size: 0.65rem; }
+    .status-label { color: var(--pip-dim); letter-spacing: 2px; text-transform: uppercase; }
+    .status-bar-fill {
+      width: 80px; height: 6px;
+      background: var(--pip-dark);
+      border: 1px solid var(--pip-dim);
+      overflow: hidden;
+    }
+    .status-bar-fill-inner { height: 100%; background: var(--pip); box-shadow: 0 0 4px var(--pip); }
+    .status-val { color: var(--pip); text-shadow: 0 0 6px var(--pip); }
+
+    /* ── Tab navigation (Pip-Boy STAT / GAMES / DATA / MAP / RADIO) ── */
+    .pip-tabs {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--pip-dim);
+      display: flex;
+    }
+
+    .pip-tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--pip-dim);
+      border-right: 1px solid var(--pip-dark);
+      cursor: default;
+      transition: all 0.15s;
+    }
+
+    .pip-tab:last-child { border-right: none; }
+    .pip-tab:hover { color: var(--pip); background: var(--pip-glow); }
+    .pip-tab.active {
+      color: var(--bg);
+      background: var(--pip);
+      text-shadow: none;
+      box-shadow: 0 0 15px var(--pip);
+    }
+
+    /* ── S.P.E.C.I.A.L. mini-bar ── */
+    .special-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--pip-dark);
+      background: rgba(26,255,128,0.02);
+      flex-wrap: wrap;
+    }
+
+    .special-stat {
+      text-align: center;
+      font-size: 0.6rem;
+    }
+
+    .special-name { color: var(--pip-dim); letter-spacing: 1px; }
+    .special-val  { display: block; color: var(--pip); font-size: 1rem; font-weight: 700; text-shadow: 0 0 8px var(--pip); line-height: 1; margin-top: 2px; }
+
+    /* ── Main content area ── */
+    main {
+      flex: 1;
+      padding: 16px 20px 40px;
+    }
+
+    /* Section command line (from v6) */
+    .cmd-line {
+      font-size: 0.7rem;
+      margin-bottom: 10px;
+      color: var(--pip-dim);
+    }
+
+    .cmd-line .prompt { color: var(--pip-dim); }
+    .cmd-line .cmd    { color: var(--pip); }
+    .cmd-line .arg    { color: var(--amber); }
+
+    .section-rule {
+      border: none;
+      border-top: 1px solid var(--pip-dark);
+      margin: 8px 0 16px;
+    }
+
+    .section-head {
+      font-size: 0.65rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--pip-dim);
+      margin-bottom: 14px;
+    }
+
+    /* ── Inventory list — Pip-Boy item style ── */
+    .inv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+    }
+
+    .inv-table thead tr { border-bottom: 1px solid var(--pip-dim); }
+
+    .inv-table th {
+      font-size: 0.55rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--pip-dim);
+      padding: 4px 12px;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    .inv-table tbody tr {
+      border-bottom: 1px solid rgba(26,255,128,0.08);
+      transition: background 0.1s;
+    }
+
+    .inv-table tbody tr:hover {
+      background: var(--pip-glow);
+    }
+
+    .inv-table td { padding: 9px 12px; vertical-align: middle; }
+
+    .col-id   { color: var(--pip-dim); font-size: 0.6rem; letter-spacing: 1px; }
+    .col-icon { font-size: 1.2rem; filter: sepia(1) hue-rotate(100deg) saturate(2) brightness(0.9); }
+    .col-name { color: var(--pip); font-weight: 700; text-shadow: 0 0 6px rgba(26,255,128,0.3); }
+    .col-type {
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .col-type.puzzle   { color: #40c8ff; }
+    .col-type.word     { color: var(--amber); }
+    .col-type.strategy { color: #a0ff60; }
+    .col-type.arcade   { color: #ff8040; }
+    .col-type.classic  { color: #c060ff; }
+    .col-type.skill    { color: var(--pip); }
+
+    .col-desc { font-size: 0.65rem; color: var(--pip-dim); line-height: 1.6; max-width: 300px; }
+
+    .col-wgt { color: var(--pip-dim); font-size: 0.6rem; text-align: right; }
+
+    /* Status indicator */
+    .status-online {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.6rem;
+      color: var(--pip);
+    }
+
+    .status-online::before {
+      content: '';
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--pip);
+      box-shadow: 0 0 6px var(--pip);
+    }
+
+    .pip-link {
+      display: inline-block;
+      color: var(--pip);
+      text-decoration: none;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid var(--pip-dim);
+      padding: 4px 10px;
+      transition: all 0.15s;
+    }
+
+    .pip-link:hover {
+      background: var(--pip);
+      color: var(--bg);
+      box-shadow: 0 0 12px var(--pip);
+    }
+
+    /* ── Vault-Tec footer ── */
+    .vt-footer {
+      background: var(--bg2);
+      border-top: 2px solid var(--pip-dim);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.6rem;
+      color: var(--pip-dim);
+      letter-spacing: 2px;
+    }
+
+    .vt-footer .pip-blink {
+      display: inline-block;
+      width: 8px; height: 12px;
+      background: var(--pip);
+      box-shadow: 0 0 6px var(--pip);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .rad-counter { color: var(--red-pip); text-shadow: 0 0 6px rgba(255,48,32,0.5); }
+
+    /* ── Vault-Tec seal ── */
+    .vt-seal {
+      text-align: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--pip-dark);
+      font-size: 0.65rem;
+      color: var(--pip-dim);
+      letter-spacing: 3px;
+    }
+
+    .vt-seal strong { color: var(--pip); letter-spacing: 5px; }
+
+    /* ── Boot text (from v6) ── */
+    .boot-text {
+      font-size: 0.65rem;
+      color: var(--pip-dim);
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--pip-dark);
+      background: var(--bg2);
+    }
+
+    .boot-text .ok   { color: var(--pip); }
+    .boot-text .warn { color: var(--amber); }
+    .boot-text .err  { color: var(--red-pip); }
+  </style>
+</head>
+<body>
+
+<div class="pipboy-frame">
+
+  <!-- ── Vault-Tec Header ── -->
+  <div class="vt-header">
+    <div class="vt-brand">
+      <div class="vt-logo">
+        <strong>VAULT-TEC OS</strong>
+        PERSONAL INFORMATION PROCESSOR v16.0 &nbsp;·&nbsp; FUN FREE WEB GAMES MODULE
+      </div>
+      <div class="vt-system">
+        SYS: <span class="ok">ONLINE</span> &nbsp;
+        NET: <span class="ok">CONNECTED</span> &nbsp;
+        RAD: <span class="rad">3 rads/hr</span><br>
+        GAMES: <span class="ok">15 FOUND</span> &nbsp;
+        DOWNLOADS: <span class="ok">0 req.</span> &nbsp;
+        COST: <span class="ok">$0.00</span>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-seg">
+        <span class="status-label">HP</span>
+        <div class="status-bar-fill"><div class="status-bar-fill-inner" style="width:85%"></div></div>
+        <span class="status-val">85</span>
+      </div>
+      <div class="status-seg">
+        <span class="status-label">AP</span>
+        <div class="status-bar-fill"><div class="status-bar-fill-inner" style="width:100%"></div></div>
+        <span class="status-val">100</span>
+      </div>
+      <div class="status-seg">
+        <span class="status-label">FUN</span>
+        <div class="status-bar-fill"><div class="status-bar-fill-inner" style="width:100%"></div></div>
+        <span class="status-val">MAX</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Tab Navigation ── -->
+  <div class="pip-tabs">
+    <div class="pip-tab">Stat</div>
+    <div class="pip-tab active">Games</div>
+    <div class="pip-tab">Data</div>
+    <div class="pip-tab">Map</div>
+    <div class="pip-tab">Radio</div>
+  </div>
+
+  <!-- ── Boot sequence (v6 terminal) ── -->
+  <div class="boot-text">
+    Loading FFWG database....... <span class="ok">[ OK ]</span> &nbsp;
+    Scanning 15 entries......... <span class="ok">[ OK ]</span> &nbsp;
+    Verifying links............. <span class="ok">[ OK ]</span> &nbsp;
+    Tracking blocked............ <span class="ok">[ OK ]</span> &nbsp;
+    Download required........... <span class="warn">[ NONE ]</span>
+  </div>
+
+  <!-- ── S.P.E.C.I.A.L. ── -->
+  <div class="special-bar">
+    <div class="special-stat">
+      <span class="special-name">STR</span>
+      <span class="special-val">7</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">PER</span>
+      <span class="special-val">9</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">END</span>
+      <span class="special-val">6</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">CHR</span>
+      <span class="special-val">5</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">INT</span>
+      <span class="special-val">10</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">AGI</span>
+      <span class="special-val">8</span>
+    </div>
+    <div class="special-stat">
+      <span class="special-name">LCK</span>
+      <span class="special-val">7</span>
+    </div>
+  </div>
+
+  <div class="vt-seal">
+    <strong>VAULT-TEC</strong> &nbsp;·&nbsp; Approved Free Entertainment Registry &nbsp;·&nbsp; "War Never Changes. Fun Always Does."
+  </div>
+
+  <!-- ── Game inventory ── -->
+  <main>
+
+    <div class="cmd-line">
+      <span class="prompt">PIP-BOY&gt; </span>
+      <span class="cmd">list</span>
+      <span class="arg"> --category=games --filter=free --sort=id</span>
+    </div>
+    <hr class="section-rule">
+    <div class="section-head">// Entertainment Database — 15 Entries Found</div>
+
+    <table class="inv-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th></th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Wgt.</th>
+          <th>Exec</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td class="col-id">001</td>
+          <td class="col-icon">💣</td>
+          <td class="col-name">Minesweeper</td>
+          <td class="col-type puzzle">Puzzle</td>
+          <td class="col-desc">Logic-based mine detection. Flag all hidden mines. Beginner → Expert.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://minesweeper.online/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">002</td>
+          <td class="col-icon">🔤</td>
+          <td class="col-name">Wordle</td>
+          <td class="col-type word">Word</td>
+          <td class="col-desc">5-letter word guessing. 6 attempts. Daily puzzle. NYT official.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">003</td>
+          <td class="col-icon">🔢</td>
+          <td class="col-name">Sudoku</td>
+          <td class="col-type puzzle">Puzzle</td>
+          <td class="col-desc">Fill 9×9 grid. Digits 1–9 in every row, column, box. Logic only.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://sudoku.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">004</td>
+          <td class="col-icon">♟️</td>
+          <td class="col-name">Chess</td>
+          <td class="col-type strategy">Strategy</td>
+          <td class="col-desc">Ancient war strategy. vs AI or live-rated matches. Chess.com.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.chess.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">005</td>
+          <td class="col-icon">🧮</td>
+          <td class="col-name">2048</td>
+          <td class="col-type puzzle">Puzzle</td>
+          <td class="col-desc">Merge numbered tiles on 4×4 grid. Reach 2048. Dangerously addictive.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://2048game.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">006</td>
+          <td class="col-icon">🟦</td>
+          <td class="col-name">Tetris</td>
+          <td class="col-type arcade">Arcade</td>
+          <td class="col-desc">Stack falling tetrominoes. Clear horizontal lines. Official release.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://play.tetris.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">007</td>
+          <td class="col-icon">🃏</td>
+          <td class="col-name">Solitaire</td>
+          <td class="col-type classic">Classic</td>
+          <td class="col-desc">Klondike. Move all 52 cards to foundation piles by suit. Classic.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">008</td>
+          <td class="col-icon">🐍</td>
+          <td class="col-name">Snake</td>
+          <td class="col-type arcade">Arcade</td>
+          <td class="col-desc">Navigate growing serpent. Consume food. Avoid self-collision.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">009</td>
+          <td class="col-icon">📰</td>
+          <td class="col-name">Crossword</td>
+          <td class="col-type word">Word</td>
+          <td class="col-desc">Grid word puzzle. Solve across and down clues. Vocabulary builder.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">010</td>
+          <td class="col-icon">🀄</td>
+          <td class="col-name">Mahjong</td>
+          <td class="col-type strategy">Strategy</td>
+          <td class="col-desc">Ancient tile-matching. Pair free tiles. Clear the pyramid board.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">011</td>
+          <td class="col-icon">👾</td>
+          <td class="col-name">Pac-Man</td>
+          <td class="col-type arcade">Arcade</td>
+          <td class="col-desc">Eat dots. Evade Blinky, Pinky, Inky, Clyde. Power pellets help.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">012</td>
+          <td class="col-icon">🔡</td>
+          <td class="col-name">Scrabble</td>
+          <td class="col-type word">Word</td>
+          <td class="col-desc">Build words on board. Score big. Exploit double/triple squares.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://playscrabble.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">013</td>
+          <td class="col-icon">⌨️</td>
+          <td class="col-name">TypeRacer</td>
+          <td class="col-type skill">Skill</td>
+          <td class="col-desc">Multiplayer typing race. Measure WPM. Train speed and accuracy.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">014</td>
+          <td class="col-icon">🎴</td>
+          <td class="col-name">Memory Match</td>
+          <td class="col-type classic">Classic</td>
+          <td class="col-desc">Flip cards. Memorize positions. Match all pairs. Working memory.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://memorymatching.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+        <tr>
+          <td class="col-id">015</td>
+          <td class="col-icon">🎱</td>
+          <td class="col-name">Pinball</td>
+          <td class="col-type arcade">Arcade</td>
+          <td class="col-desc">Flipper-controlled ball physics. Hit targets. Accumulate high scores.</td>
+          <td><span class="status-online">Online</span></td>
+          <td class="col-wgt">0.0 lb</td>
+          <td><a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="pip-link">OPEN</a></td>
+        </tr>
+
+      </tbody>
+    </table>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <div class="vt-footer">
+    <span>VAULT-TEC OS &nbsp;·&nbsp; FFWG-HUB MODULE &nbsp;·&nbsp; V16</span>
+    <span>15 ENTRIES &nbsp;·&nbsp; ALL FREE &nbsp;·&nbsp; NO DOWNLOAD &nbsp;·&nbsp; NO TRACKING</span>
+    <span class="rad-counter">RAD: 3/hr</span>
+    <span>_ <span class="pip-blink"></span></span>
+  </div>
+
+</div>
+
+</body>
+</html>

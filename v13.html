@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === ANTI-KAWAII HORROR — Opposite of v7 === */
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&family=UnifrakturMaguntia&display=swap');
+
+    :root {
+      --blood:    #8b0000;
+      --blood2:   #5c0000;
+      --rot:      #1a1200;
+      --bile:     #2a2800;
+      --bone:     #c8c4a0;
+      --pale:     #d4cfb8;
+      --shadow:   #0a0800;
+      --rust:     #6b3a1f;
+      --sickly:   #3d4a1a;
+      --void:     #050402;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--void);
+      color: var(--bone);
+      font-family: 'Special Elite', 'Courier New', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Blood drip from top */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: var(--blood);
+      box-shadow: 0 0 20px var(--blood), 0 4px 30px rgba(139,0,0,0.6);
+      z-index: 100;
+    }
+
+    /* Cracked texture overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(ellipse at 15% 25%, rgba(139,0,0,0.08) 0%, transparent 40%),
+        radial-gradient(ellipse at 85% 75%, rgba(50,30,0,0.15) 0%, transparent 50%);
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 60px 20px 50px;
+      border-bottom: 1px solid rgba(139,0,0,0.4);
+      background: linear-gradient(180deg, #0f0800 0%, var(--void) 100%);
+    }
+
+    /* Drip SVG-like drops using pseudo + border trick */
+    .drip-row {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .drip {
+      width: 6px;
+      background: var(--blood);
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 0 8px var(--blood);
+      animation: drip-fall var(--dur, 3s) ease-in infinite var(--delay, 0s);
+    }
+
+    @keyframes drip-fall {
+      0%   { height: 4px;  opacity: 1; }
+      70%  { height: 28px; opacity: 1; }
+      100% { height: 4px;  opacity: 0; }
+    }
+
+    .skull-row {
+      font-size: 1.4rem;
+      letter-spacing: 16px;
+      margin-bottom: 20px;
+      color: rgba(200,196,160,0.25);
+      animation: flicker 6s ease infinite;
+    }
+
+    @keyframes flicker {
+      0%,100% { opacity: 0.25; }
+      47%     { opacity: 0.25; }
+      48%     { opacity: 0.08; }
+      49%     { opacity: 0.25; }
+      91%     { opacity: 0.25; }
+      92%     { opacity: 0.04; }
+      93%     { opacity: 0.25; }
+    }
+
+    header h1 {
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      color: var(--blood);
+      line-height: 1;
+      text-shadow:
+        0 0 20px rgba(139,0,0,0.8),
+        0 0 60px rgba(139,0,0,0.3),
+        3px 3px 0 var(--void);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-family: 'Special Elite', serif;
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      color: rgba(200,196,160,0.4);
+      text-transform: uppercase;
+    }
+
+    /* ── Warning strip ── */
+    .warning-strip {
+      background: var(--blood2);
+      border-top: 1px solid var(--blood);
+      border-bottom: 1px solid var(--blood);
+      padding: 8px 20px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--bone);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .warning-strip::before {
+      content: '☠ ';
+      color: var(--blood);
+    }
+    .warning-strip::after {
+      content: ' ☠';
+      color: var(--blood);
+    }
+
+    /* ── Grim nav ── */
+    nav {
+      background: var(--rot);
+      border-bottom: 1px solid rgba(139,0,0,0.3);
+      padding: 10px 24px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-family: 'Special Elite', serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--bone);
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid rgba(139,0,0,0.3);
+      opacity: 0.7;
+      transition: all 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--blood);
+      border-color: var(--blood);
+      opacity: 1;
+      text-shadow: 0 0 8px var(--blood);
+    }
+
+    /* ── Main ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .tome-heading {
+      text-align: center;
+      margin-bottom: 32px;
+      font-family: 'Creepster', sans-serif;
+      font-size: 1.4rem;
+      color: rgba(139,0,0,0.6);
+      letter-spacing: 6px;
+    }
+
+    .tome-heading::before { content: '— '; }
+    .tome-heading::after  { content: ' —'; }
+
+    /* ── Game grid ── */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 12px;
+    }
+
+    .game-card {
+      background: linear-gradient(160deg, #100a00 0%, #0a0800 100%);
+      border: 1px solid rgba(139,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(139,0,0,0.015) 40px,
+        rgba(139,0,0,0.015) 41px
+      );
+      pointer-events: none;
+    }
+
+    .game-card:hover {
+      border-color: rgba(139,0,0,0.7);
+      box-shadow: 0 0 20px rgba(139,0,0,0.2), inset 0 0 30px rgba(139,0,0,0.05);
+    }
+
+    /* Blood-line top edge */
+    .card-blood-line {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blood), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .game-card:hover .card-blood-line { opacity: 1; }
+
+    .card-head {
+      padding: 18px 18px 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      border-bottom: 1px solid rgba(139,0,0,0.12);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      filter: grayscale(0.6) brightness(0.7) sepia(0.4);
+    }
+
+    .card-title-group { flex: 1; }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--blood);
+      text-shadow: 0 0 6px rgba(139,0,0,0.5);
+      margin-bottom: 4px;
+      font-family: 'Special Elite', serif;
+    }
+
+    .game-card h3 {
+      font-family: 'Creepster', sans-serif;
+      font-size: 1.4rem;
+      color: var(--pale);
+      line-height: 1;
+      text-shadow: 1px 1px 0 var(--void), 0 0 10px rgba(139,0,0,0.2);
+    }
+
+    .card-body { padding: 14px 18px 20px; flex: 1; display: flex; flex-direction: column; }
+
+    .game-desc {
+      font-family: 'Special Elite', serif;
+      font-size: 12px;
+      color: rgba(200,196,160,0.5);
+      line-height: 1.75;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    /* Horror play button — jagged, menacing */
+    .play-btn {
+      display: inline-block;
+      font-family: 'Creepster', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      color: var(--bone);
+      text-decoration: none;
+      background: var(--blood2);
+      border: 1px solid var(--blood);
+      padding: 10px 20px;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(139,0,0,0.4);
+      box-shadow: 0 0 10px rgba(139,0,0,0.2);
+      clip-path: polygon(0 0, 97% 0, 100% 30%, 100% 100%, 3% 100%, 0 70%);
+      transition: all 0.2s;
+    }
+
+    .play-btn:hover {
+      background: var(--blood);
+      box-shadow: 0 0 20px rgba(139,0,0,0.5);
+      color: #fff;
+    }
+
+    .play-btn::before { content: '☠ '; font-size: 0.8rem; }
+
+    /* ── Bone divider ── */
+    .bone-divider {
+      text-align: center;
+      font-size: 1.2rem;
+      letter-spacing: 20px;
+      color: rgba(200,196,160,0.1);
+      margin: 36px 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid rgba(139,0,0,0.3);
+      background: #0a0800;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-title {
+      font-family: 'UnifrakturMaguntia', serif;
+      font-size: 1.2rem;
+      color: var(--blood);
+      text-shadow: 0 0 10px rgba(139,0,0,0.5);
+      margin-bottom: 6px;
+    }
+
+    footer p {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(200,196,160,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="drip-row">
+      <div class="drip" style="--dur:2.4s;--delay:0s;"></div>
+      <div class="drip" style="--dur:3.1s;--delay:0.6s;"></div>
+      <div class="drip" style="--dur:2.7s;--delay:1.2s;"></div>
+      <div class="drip" style="--dur:3.5s;--delay:0.3s;"></div>
+      <div class="drip" style="--dur:2.2s;--delay:0.9s;"></div>
+      <div class="drip" style="--dur:3.8s;--delay:1.5s;"></div>
+      <div class="drip" style="--dur:2.6s;--delay:0.4s;"></div>
+    </div>
+    <div class="skull-row">💀 💀 💀 💀 💀</div>
+    <h1>Fun Free Web Games Hub</h1>
+    <p class="subtitle">☠ &nbsp; Fifteen Cursed Diversions &nbsp; ☠ &nbsp; No Escape &nbsp; ☠</p>
+  </header>
+
+  <div class="warning-strip">
+    15 Games — Zero Downloads — Enter If You Dare
+  </div>
+
+  <nav>
+    <a href="#">🩸 Puzzle</a>
+    <a href="#">💀 Strategy</a>
+    <a href="#">👁 Arcade</a>
+    <a href="#">🕷 Word</a>
+    <a href="#">🦇 Classic</a>
+    <a href="#">🪦 Skill</a>
+  </nav>
+
+  <main>
+    <div class="tome-heading">Choose Your Torment</div>
+
+    <div class="game-grid">
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">💣</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>Minesweeper</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Each click may be your last. Unearth the grid's deadly secrets without triggering its wrath.</p>
+          <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🔤</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Wordle</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Six guesses to reveal a word buried in shadow. Fail and it devours you whole.</p>
+          <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🔢</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>Sudoku</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Numbers etched into stone by forces unknown. Fill the ritual grid — or be filled by it.</p>
+          <a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">♟️</span>
+          <div class="card-title-group">
+            <span class="card-tag">Strategy</span>
+            <h3>Chess</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">A game of kings played in candlelight. Your opponent shows no mercy. Neither should you.</p>
+          <a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🧮</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>2048</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Merge and multiply until the board is consumed. There is no salvation beyond 2048.</p>
+          <a href="https://2048game.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🟦</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Tetris</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Blocks descend without end. Stack, clear, survive. The ceiling draws ever closer.</p>
+          <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🃏</span>
+          <div class="card-title-group">
+            <span class="card-tag">Classic</span>
+            <h3>Solitaire</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">A solitary vigil with 52 accomplices. Sort the dead into their piles and be done with it.</p>
+          <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🐍</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Snake</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">The serpent grows hungrier with each morsel. One wrong move and it consumes itself.</p>
+          <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">📰</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Crossword</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Words hidden within a grid like bodies in a wall. Find them before the ink runs dry.</p>
+          <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🀄</span>
+          <div class="card-title-group">
+            <span class="card-tag">Strategy</span>
+            <h3>Mahjong</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Ancient tiles carved from something best left unnamed. Match them. Clear your sins.</p>
+          <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">👾</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Pac-Man</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">You are hunted through the maze. There is no darkness to hide in. They are always watching.</p>
+          <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🔡</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Scrabble</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Spell what must not be named. Every letter placed is a bargain with the board.</p>
+          <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">⌨️</span>
+          <div class="card-title-group">
+            <span class="card-tag">Skill</span>
+            <h3>TypeRacer</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Type to outrun them. Your fingers falter. They do not tire. Type faster. Type now.</p>
+          <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🎴</span>
+          <div class="card-title-group">
+            <span class="card-tag">Classic</span>
+            <h3>Memory Match</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">What lies beneath each card? You thought you remembered. You did not remember correctly.</p>
+          <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-blood-line"></div>
+        <div class="card-head">
+          <span class="card-icon">🎱</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Pinball</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">The ball rolls of its own accord. The flippers respond to nothing. Score, or be swallowed.</p>
+          <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-btn">Enter</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="bone-divider">💀 &nbsp; 🦴 &nbsp; 💀 &nbsp; 🦴 &nbsp; 💀</div>
+  </main>
+
+  <footer>
+    <div class="footer-title">Fun Free Web Games Hub</div>
+    <p>All games are external links · No tracking · No downloads · V13 Horror Edition</p>
+  </footer>
+
+</body>
+</html>
