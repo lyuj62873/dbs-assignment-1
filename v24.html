@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Games Hub</title>
+  <style>
+    /* === CYBER-VAPORWAVE + LINUX CLI SECTION — v24 === */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Major+Mono+Display&family=Share+Tech+Mono&display=swap');
+
+    :root {
+      --hot-pink:   #ff2d78;
+      --neon-blue:  #01cdfe;
+      --neon-purple:#b967ff;
+      --cyber-teal: #05ffa1;
+      --laser-yell: #fffb96;
+      --bg:         #04000f;
+      --grid-pink:  rgba(255,45,120,0.35);
+      --grid-blue:  rgba(1,205,254,0.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: #e8d5ff;
+      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 55vh;
+      background: linear-gradient(180deg,#04000f 0%,#160030 25%,#4a0060 48%,#c0006a 62%,#ff2d78 72%,#ff7e5f 82%,#1a0030 100%);
+      z-index: -2;
+    }
+
+    .scanlines {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9;
+      background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+    }
+
+    @keyframes float-hero {
+      0%   { transform: translateY(0px); }
+      100% { transform: translateY(-12px); }
+    }
+
+    .sun-wrap { display: flex; justify-content: center; padding-top: 36px; position: relative; z-index: 1; animation: float-hero 7s ease-in-out infinite alternate; }
+
+
+    .sun {
+      width: 220px; height: 110px;
+      border-radius: 110px 110px 0 0;
+      background: linear-gradient(180deg, var(--laser-yell) 0%, var(--hot-pink) 55%, var(--neon-purple) 100%);
+      box-shadow: 0 0 40px var(--hot-pink), 0 0 100px rgba(255,45,120,0.4);
+      overflow: hidden; position: relative;
+    }
+    .sun::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+      background: repeating-linear-gradient(to top, var(--bg) 0px, var(--bg) 9px, transparent 9px, transparent 22px);
+    }
+
+    .mountains { display: flex; justify-content: center; align-items: flex-end; margin: 20px 0; position: relative; z-index: 1; opacity: 0.45; animation: float-hero 9s ease-in-out infinite alternate; animation-delay: -3s; }
+    .mt { width: 0; height: 0; border-style: solid; margin: 0 -15px; }
+    .mt-a { border-width: 0 70px 120px 70px; border-color: transparent transparent #240050 transparent; }
+    .mt-b { border-width: 0 90px 160px 90px; border-color: transparent transparent #1a003a transparent; }
+    .mt-c { border-width: 0 60px 100px 60px; border-color: transparent transparent #300060 transparent; }
+    .mt-d { border-width: 0 80px 140px 80px; border-color: transparent transparent #200040 transparent; }
+
+    header { position: relative; z-index: 2; text-align: center; padding: 12px 20px 36px; }
+
+    .cyber-badge {
+      display: inline-block; font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 8px; text-transform: uppercase; color: var(--cyber-teal);
+      text-shadow: 0 0 10px var(--cyber-teal); margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-family: 'Major Mono Display', monospace; font-size: clamp(1.8rem, 5vw, 3.8rem);
+      line-height: 1.05; margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--laser-yell) 0%, var(--hot-pink) 30%, var(--neon-blue) 60%, var(--neon-purple) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(255,45,120,0.7));
+    }
+
+    header p { font-size: 0.75rem; letter-spacing: 4px; color: rgba(255,255,255,0.35); text-transform: uppercase; }
+
+    .data-strip {
+      position: relative; z-index: 2; display: flex; justify-content: center; gap: 0;
+      margin: 10px auto 30px; max-width: 700px;
+      border: 1px solid rgba(255,45,120,0.3); background: rgba(255,45,120,0.05); backdrop-filter: blur(6px);
+    }
+    .data-cell { flex: 1; padding: 14px 16px; text-align: center; border-right: 1px solid rgba(255,45,120,0.2); }
+    .data-cell:last-child { border-right: none; }
+    .data-val { display: block; font-family: 'Orbitron', monospace; font-size: 1.4rem; font-weight: 900; color: var(--hot-pink); text-shadow: 0 0 12px var(--hot-pink); }
+    .data-key { font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+    main { position: relative; z-index: 2; max-width: 1300px; margin: 0 auto; padding: 0 20px 80px; }
+
+    .neon-rule {
+      height: 1px; background: linear-gradient(90deg, transparent, var(--hot-pink), var(--neon-blue), var(--neon-purple), transparent);
+      box-shadow: 0 0 8px var(--hot-pink); margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 700; letter-spacing: 7px;
+      text-transform: uppercase; color: var(--neon-blue); text-shadow: 0 0 8px var(--neon-blue);
+      text-align: center; margin-bottom: 24px;
+    }
+
+    .game-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px;
+    }
+
+    .game-card:nth-child(4n+1) { --acc: var(--hot-pink); }
+    .game-card:nth-child(4n+2) { --acc: var(--neon-blue); }
+    .game-card:nth-child(4n+3) { --acc: var(--neon-purple); }
+    .game-card:nth-child(4n)   { --acc: var(--cyber-teal); }
+
+    .game-card {
+      background: rgba(4,0,15,0.75); border: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(8px); padding: 0; position: relative; overflow: hidden;
+      transition: transform 0.25s, border-color 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .game-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--hot-pink), var(--neon-blue), var(--neon-purple));
+    }
+    .game-card::after {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--acc); box-shadow: 0 0 18px var(--acc), 0 0 40px var(--acc);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .game-card:hover { transform: translateY(-3px); border-color: var(--acc); }
+    .game-card:hover::after { opacity: 1; }
+
+    .card-chrome { position: absolute; left: 0; top: 3px; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--acc), transparent); opacity: 0.6; }
+    .card-head { padding: 18px 18px 12px 20px; display: flex; align-items: flex-start; gap: 14px; }
+    .card-icon { font-size: 2rem; filter: drop-shadow(0 0 8px var(--acc)); flex-shrink: 0; }
+    .card-meta { flex: 1; }
+    .card-tag { font-family: 'Orbitron', monospace; font-size: 0.55rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--acc); text-shadow: 0 0 6px var(--acc); display: block; margin-bottom: 4px; }
+    .game-card h3 { font-family: 'Major Mono Display', monospace; font-size: 0.95rem; color: #fff; line-height: 1.1; }
+    .card-body { padding: 0 18px 18px 20px; flex: 1; display: flex; flex-direction: column; }
+    .game-desc { font-size: 0.78rem; color: rgba(200,180,255,0.5); line-height: 1.75; margin-bottom: 16px; flex: 1; }
+
+    .play-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Orbitron', monospace; font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase; text-decoration: none;
+      color: var(--acc); border: 1px solid var(--acc); padding: 8px 16px;
+      box-shadow: inset 0 0 12px rgba(255,45,120,0.05), 0 0 10px rgba(255,45,120,0.15);
+      transition: all 0.2s;
+    }
+    .play-btn::after { content: '▶'; font-size: 0.55rem; }
+    .play-btn:hover { background: var(--acc); color: #000; box-shadow: 0 0 25px var(--acc); }
+
+    /* ── CLI Section ── */
+    .cli-section {
+      margin-top: 60px;
+    }
+
+    .cli-section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .cli-section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--cyber-teal);
+      text-shadow: 0 0 10px var(--cyber-teal);
+      white-space: nowrap;
+    }
+
+    .cli-rule {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyber-teal), transparent);
+      box-shadow: 0 0 6px var(--cyber-teal);
+    }
+
+    .cli-intro {
+      font-size: 0.72rem;
+      color: rgba(200,180,255,0.4);
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+    }
+
+    .cli-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    .cli-card:nth-child(4n+1) { --cacc: var(--cyber-teal); }
+    .cli-card:nth-child(4n+2) { --cacc: var(--neon-blue); }
+    .cli-card:nth-child(4n+3) { --cacc: var(--hot-pink); }
+    .cli-card:nth-child(4n)   { --cacc: var(--neon-purple); }
+
+    .cli-card {
+      background: rgba(4,0,15,0.85);
+      border: 1px solid rgba(5,255,161,0.15);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.2s;
+      display: flex; flex-direction: column;
+    }
+
+    .cli-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--cacc);
+      box-shadow: 0 0 10px var(--cacc);
+    }
+
+    .cli-card:hover {
+      border-color: var(--cacc);
+      transform: translateY(-2px);
+    }
+
+    .cli-card-head {
+      padding: 14px 16px 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(5,255,161,0.08);
+    }
+
+    .cli-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.55rem;
+      color: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .cli-name {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.9rem;
+      color: var(--cacc);
+      text-shadow: 0 0 8px var(--cacc);
+    }
+
+    .cli-card-body { padding: 12px 16px 16px; flex: 1; display: flex; flex-direction: column; }
+
+    .cli-desc {
+      font-size: 0.72rem;
+      color: rgba(200,180,255,0.45);
+      line-height: 1.8;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+
+    .cli-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .cli-code {
+      display: block;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(5,255,161,0.2);
+      color: var(--cyber-teal);
+      text-shadow: 0 0 6px var(--cyber-teal);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      padding: 7px 12px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      user-select: all;
+    }
+
+    .cli-code.launch-cmd {
+      color: var(--laser-yell);
+      text-shadow: 0 0 6px var(--laser-yell);
+      border-color: rgba(255,251,150,0.2);
+    }
+
+    footer {
+      position: relative; z-index: 2; text-align: center; padding: 32px 20px;
+      border-top: 1px solid rgba(255,45,120,0.2);
+      font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
+    }
+    footer .logo {
+      font-family: 'Orbitron', monospace; font-size: 0.9rem; font-weight: 900;
+      background: linear-gradient(90deg, var(--hot-pink), var(--neon-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: block; margin-bottom: 6px;
+    }
+    footer p { color: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+
+  <div class="scanlines"></div>
+  <div class="sun-wrap"><div class="sun"></div></div>
+  <div class="mountains">
+    <div class="mt mt-c"></div><div class="mt mt-a"></div><div class="mt mt-b"></div>
+    <div class="mt mt-d"></div><div class="mt mt-a"></div><div class="mt mt-c"></div>
+  </div>
+
+  <header>
+    <div class="cyber-badge">[ Cyber Vaporwave Interface Online — v24 ]</div>
+    <h1>fun free<br>games hub</h1>
+    <p>// 16 browser games + 8 linux cli games &nbsp;·&nbsp; zero downloads &nbsp;·&nbsp; browser native</p>
+  </header>
+
+  <div class="data-strip">
+    <div class="data-cell"><span class="data-val">16</span><span class="data-key">Browser Games</span></div>
+    <div class="data-cell"><span class="data-val">8</span><span class="data-key">CLI Games</span></div>
+    <div class="data-cell"><span class="data-val">$0</span><span class="data-key">Cost</span></div>
+    <div class="data-cell"><span class="data-val">∞</span><span class="data-key">Replays</span></div>
+  </div>
+
+  <main>
+    <div class="neon-rule"></div>
+    <div class="section-label">// Section I — Browser Games — Select a World //</div>
+
+    <div class="game-grid">
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">💣</span><div class="card-meta"><span class="card-tag">Puzzle</span><h3>Minesweeper</h3></div></div><div class="card-body"><p class="game-desc">Logic-based mine detection. Flag every hidden mine to escape the grid alive.</p><a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🔤</span><div class="card-meta"><span class="card-tag">Word</span><h3>Wordle</h3></div></div><div class="card-body"><p class="game-desc">Six chances to decode the daily five-letter word. NYT official. Vibe daily.</p><a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🔢</span><div class="card-meta"><span class="card-tag">Puzzle</span><h3>Sudoku</h3></div></div><div class="card-body"><p class="game-desc">Fill the 9×9 number grid. Every row, column, and box contains digits 1–9.</p><a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">♟️</span><div class="card-meta"><span class="card-tag">Strategy</span><h3>Chess</h3></div></div><div class="card-body"><p class="game-desc">Ancient war strategy transcribed to 64 squares. Challenge AI or live opponents.</p><a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🧮</span><div class="card-meta"><span class="card-tag">Puzzle</span><h3>2048</h3></div></div><div class="card-body"><p class="game-desc">Merge tiles exponentially. Reach 2048 and transcend the grid entirely.</p><a href="https://2048game.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🟦</span><div class="card-meta"><span class="card-tag">Arcade</span><h3>Tetris</h3></div></div><div class="card-body"><p class="game-desc">Stack falling tetrominoes before the grid overflows. Official browser release.</p><a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🃏</span><div class="card-meta"><span class="card-tag">Classic</span><h3>Solitaire</h3></div></div><div class="card-body"><p class="game-desc">Klondike card solitaire. Sort all 52 cards to foundation piles by suit.</p><a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🐍</span><div class="card-meta"><span class="card-tag">Arcade</span><h3>Snake</h3></div></div><div class="card-body"><p class="game-desc">Consume, grow, survive. Guide your serpent without crossing its own trail.</p><a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">📰</span><div class="card-meta"><span class="card-tag">Word</span><h3>Crossword</h3></div></div><div class="card-body"><p class="game-desc">Fill the grid from clues running across and down. Classic word puzzle online.</p><a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🀄</span><div class="card-meta"><span class="card-tag">Strategy</span><h3>Mahjong</h3></div></div><div class="card-body"><p class="game-desc">Ancient tile-matching puzzle. Pair free tiles and clear the pyramid board.</p><a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">👾</span><div class="card-meta"><span class="card-tag">Arcade</span><h3>Pac-Man</h3></div></div><div class="card-body"><p class="game-desc">Navigate the neon maze. Eat dots. Evade four spectral entities. Power up.</p><a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🔡</span><div class="card-meta"><span class="card-tag">Word</span><h3>Scrabble</h3></div></div><div class="card-body"><p class="game-desc">Build high-scoring words. Command bonus squares. Outmanoeuvre your opponent.</p><a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">⌨️</span><div class="card-meta"><span class="card-tag">Skill</span><h3>TypeRacer</h3></div></div><div class="card-body"><p class="game-desc">Race live opponents by typing quoted passages. Measure your WPM in real time.</p><a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🎴</span><div class="card-meta"><span class="card-tag">Classic</span><h3>Memory Match</h3></div></div><div class="card-body"><p class="game-desc">Flip cards and memorize positions to find all matching pairs. Brain workout.</p><a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">🎱</span><div class="card-meta"><span class="card-tag">Arcade</span><h3>Pinball</h3></div></div><div class="card-body"><p class="game-desc">Flipper physics, targets, bonuses, high scores. A neon arcade classic online.</p><a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+      <div class="game-card"><div class="card-chrome"></div><div class="card-head"><span class="card-icon">⬛</span><div class="card-meta"><span class="card-tag">Strategy</span><h3>Reversi</h3></div></div><div class="card-body"><p class="game-desc">Outflank your opponent's discs to claim the board. Classic two-player strategy.</p><a href="https://cardgames.io/reversi/" target="_blank" rel="noopener" class="play-btn">Launch</a></div></div>
+    </div>
+
+    <!-- ── Linux CLI Games Section ── -->
+    <div class="cli-section">
+      <div class="neon-rule" style="background:linear-gradient(90deg,transparent,var(--cyber-teal),var(--neon-blue),transparent);box-shadow:0 0 8px var(--cyber-teal);margin-bottom:20px;"></div>
+      <div class="cli-section-header">
+        <span class="cli-section-title">// Section II — Linux Command Line Games</span>
+        <div class="cli-rule"></div>
+      </div>
+      <p class="cli-intro">// Install via apt · Run in any Linux terminal · No GUI required · Pure ASCII power</p>
+
+      <div class="cli-grid">
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·01</span>
+            <span class="cli-name">NetHack</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">The legendary roguelike dungeon crawler. Explore procedurally generated levels, fight monsters, and retrieve the Amulet of Yendor. Brutally deep.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install nethack-console</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">nethack-console</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·02</span>
+            <span class="cli-name">Bastet</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">Tetris — but the AI deliberately gives you the worst possible piece every time. Sadistic, infuriating, and utterly compelling.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install bastet</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">bastet</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·03</span>
+            <span class="cli-name">Moon-Buggy</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">Drive a lunar buggy across the moon's cratered surface. Jump over gaps and shoot obstacles. Simple side-scroller with addictive momentum.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install moon-buggy</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">moon-buggy</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·04</span>
+            <span class="cli-name">nSnake</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">The classic Snake game running entirely in your terminal. Navigate the ncurses grid, eat apples, grow longer, and don't hit yourself.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install nsnake</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">nsnake</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·05</span>
+            <span class="cli-name">ninvaders</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">Space Invaders in ASCII art. Control your cannon at the bottom, blast descending alien waves before they reach the ground.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install ninvaders</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">ninvaders</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·06</span>
+            <span class="cli-name">Nudoku</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">A full Sudoku puzzle game with ncurses interface. Choose difficulty, fill in the 9×9 grid with digits, and get hints when stuck.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install nudoku</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">nudoku</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·07</span>
+            <span class="cli-name">Greed</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">Navigate a grid of numbers using arrow keys. Moving in a direction consumes that many squares. Maximize your score before you run out of room.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install greed</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">greed</code>
+          </div>
+        </div>
+
+        <div class="cli-card">
+          <div class="cli-card-head">
+            <span class="cli-num">CLI·08</span>
+            <span class="cli-name">GNU Chess</span>
+          </div>
+          <div class="cli-card-body">
+            <p class="cli-desc">Full-featured chess engine playable directly in the terminal. Text-based board display with unicode pieces. Strong AI at multiple difficulty levels.</p>
+            <span class="cli-label">Install</span>
+            <code class="cli-code">sudo apt install gnuchess</code>
+            <span class="cli-label">Launch</span>
+            <code class="cli-code launch-cmd">gnuchess</code>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span class="logo">Fun Free Games Hub</span>
+    <p>All browser games are external links · CLI games require Linux · No tracking · v24 Cyber-Vaporwave + CLI</p>
+  </footer>
+
+</body>
+</html>
