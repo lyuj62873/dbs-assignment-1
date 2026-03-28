@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub — Design Process</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #111;
+      --white: #fafafa;
+      --gray-1: #222;
+      --gray-2: #555;
+      --gray-3: #888;
+      --gray-4: #ccc;
+      --gray-5: #f0f0f0;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+    }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--gray-4);
+      padding: 48px 40px 40px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .project-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 14px;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .project-desc {
+      font-size: 1rem;
+      color: var(--gray-2);
+      max-width: 580px;
+      line-height: 1.75;
+    }
+
+    .project-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+    }
+
+    .meta-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    /* ── Phase sections ── */
+    .phase {
+      margin-top: 56px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--black);
+      margin-bottom: 4px;
+    }
+
+    .phase-number {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+      white-space: nowrap;
+    }
+
+    .phase-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .phase-subtitle {
+      font-size: 12px;
+      color: var(--gray-3);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .phase-description {
+      font-size: 13px;
+      color: var(--gray-2);
+      padding: 14px 0 4px;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    /* ── Version cards ── */
+    .version-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 8px;
+    }
+
+    .version-card {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-4);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .version-card:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .version-card:hover .version-arrow {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    .version-num {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-4);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 1px;
+    }
+
+    .version-info { flex: 1; min-width: 0; }
+
+    .version-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+      margin-bottom: 3px;
+    }
+
+    .version-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--black);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .version-arrow {
+      font-size: 1rem;
+      color: var(--gray-4);
+      transition: color 0.15s, transform 0.15s;
+    }
+
+    /* Placeholder cards for future versions */
+    .version-card.placeholder {
+      opacity: 0.35;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .version-card.placeholder .version-tag {
+      color: var(--gray-4);
+    }
+
+    .version-card.placeholder .version-name {
+      color: var(--gray-3);
+    }
+
+    /* ── Timeline connector ── */
+    .phase + .phase::before {
+      display: block;
+      content: '';
+      width: 1px;
+      height: 24px;
+      background: var(--gray-4);
+      margin: 0 0 0 22px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--gray-4);
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--gray-3);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    footer strong { color: var(--black); }
+
+    @media (max-width: 600px) {
+      header, main, footer { padding-left: 20px; padding-right: 20px; }
+      .version-card { grid-template-columns: 36px 1fr auto; gap: 12px; }
+      .phase-subtitle { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="project-label">Design Process Journal</span>
+    <h1>Fun Free Web Games Hub</h1>
+    <p class="project-desc">
+      A 25-iteration design exploration of a browser-based free web games directory.
+      Starting from radical visual experiments, converging toward a refined, production-ready UI.
+      All pages are built with pure HTML and internal CSS — no JavaScript, no frameworks.
+    </p>
+    <div class="project-meta">
+      <div class="meta-item">
+        <span class="meta-label">Total Versions</span>
+        <span class="meta-value">25</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Tech Stack</span>
+        <span class="meta-value">HTML + CSS only</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Games Listed</span>
+        <span class="meta-value">15 per page</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Phase</span>
+        <span class="meta-value">Exploration → Refinement</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Phase 1 -->
+    <section class="phase">
+      <div class="phase-header">
+        <span class="phase-number">Phase 01</span>
+        <span class="phase-title">Radical Style Explorations</span>
+        <span class="phase-subtitle">v1 – v10</span>
+      </div>
+      <p class="phase-description">
+        Ten wildly different visual directions, each pushing a distinct aesthetic to its extreme.
+        The goal is to cast the widest possible net — from brutalism to vaporwave — before converging
+        on a design language that feels right.
+      </p>
+
+      <div class="version-list">
+
+        <a href="v1.html" class="version-card">
+          <span class="version-num">v1</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Brutalist Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v2.html" class="version-card">
+          <span class="version-num">v2</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Neon Cyberpunk Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v3.html" class="version-card">
+          <span class="version-num">v3</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Retro 8-Bit Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v4.html" class="version-card">
+          <span class="version-num">v4</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Newspaper Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v5.html" class="version-card">
+          <span class="version-num">v5</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Vaporwave Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v6.html" class="version-card">
+          <span class="version-num">v6</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Terminal / Hacker Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v7.html" class="version-card">
+          <span class="version-num">v7</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Kawaii / Pastel Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v8.html" class="version-card">
+          <span class="version-num">v8</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Bold Magazine Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v9.html" class="version-card">
+          <span class="version-num">v9</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Cosmic / Space Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+        <a href="v10.html" class="version-card">
+          <span class="version-num">v10</span>
+          <div class="version-info">
+            <span class="version-tag">Style Exploration</span>
+            <div class="version-name">Swiss / Bauhaus Style</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Phase 2 -->
+    <section class="phase">
+      <div class="phase-header">
+        <span class="phase-number">Phase 02</span>
+        <span class="phase-title">Iteration &amp; Feedback</span>
+        <span class="phase-subtitle">v11 – v19</span>
+      </div>
+      <p class="phase-description">
+        Narrowing the field. Promising directions from Phase 01 are revisited, refined, and evolved
+        based on feedback. Typography, layout, and interaction patterns are tested and adjusted.
+      </p>
+
+      <div class="version-list">
+        <div class="version-card placeholder">
+          <span class="version-num">v11</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v12</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v13</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v14</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v15</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v16</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v17</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v18</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v19</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 3 -->
+    <section class="phase">
+      <div class="phase-header">
+        <span class="phase-number">Phase 03</span>
+        <span class="phase-title">Convergence &amp; Refinement</span>
+        <span class="phase-subtitle">v20 – v25</span>
+      </div>
+      <p class="phase-description">
+        The final phase. A single cohesive design direction is polished to production quality —
+        with careful attention to spacing, hierarchy, accessibility, and overall user experience.
+      </p>
+
+      <div class="version-list">
+        <div class="version-card placeholder">
+          <span class="version-num">v20</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v21</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v22</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v23</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v24</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">—</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+        <div class="version-card placeholder">
+          <span class="version-num">v25</span>
+          <div class="version-info">
+            <span class="version-tag">Coming Soon</span>
+            <div class="version-name">Final Design</div>
+          </div>
+          <span class="version-arrow">→</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span><strong>Fun Free Web Games Hub</strong> — Design Process</span>
+    <span>25 versions · HTML + CSS only · No JS · No frameworks</span>
+  </footer>
+
+</body>
+</html>
