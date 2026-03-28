@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === SWISS INTERNATIONAL / BAUHAUS STYLE === */
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;700&display=swap');
+
+    :root {
+      --red: #e63312;
+      --blue: #0038a8;
+      --yellow: #f5c400;
+      --black: #0d0d0d;
+      --white: #f9f8f5;
+      --gray: #888;
+      --light-gray: #e8e8e8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: 'IBM Plex Sans', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Strict 12-column grid */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Top rule bar */
+    .rule-top {
+      height: 8px;
+      background: var(--red);
+    }
+
+    /* Masthead */
+    header {
+      border-bottom: 2px solid var(--black);
+    }
+
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: stretch;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .header-title-col {
+      padding: 32px 24px;
+      border-right: 1px solid var(--black);
+    }
+
+    .header-meta-col {
+      padding: 32px 24px;
+      min-width: 280px;
+    }
+
+    .overline {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--red);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -2px;
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--light-gray);
+      font-size: 12px;
+    }
+
+    .meta-item:last-child { border-bottom: none; }
+
+    .meta-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 10px;
+      color: var(--gray);
+    }
+
+    .meta-value {
+      font-weight: 500;
+    }
+
+    .meta-value.red { color: var(--red); font-weight: 700; }
+    .meta-value.blue { color: var(--blue); font-weight: 700; }
+
+    /* Navigation — strict horizontal rule nav */
+    nav {
+      border-bottom: 1px solid var(--black);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--black);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    nav a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--black);
+      border-left: 1px solid var(--light-gray);
+    }
+
+    nav a:hover {
+      background: var(--light-gray);
+    }
+
+    /* Color blocks */
+    .color-bar {
+      display: flex;
+      height: 6px;
+    }
+
+    .color-bar div {
+      flex: 1;
+    }
+
+    .cb-red { background: var(--red); }
+    .cb-blue { background: var(--blue); }
+    .cb-yellow { background: var(--yellow); }
+    .cb-black { background: var(--black); }
+
+    /* Main */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* Section heading */
+    .section-header {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 20px;
+      padding: 32px 0 20px;
+      border-bottom: 2px solid var(--black);
+      margin-bottom: 0;
+    }
+
+    .section-header h2 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+
+    .section-count {
+      font-size: 8rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--light-gray);
+      text-align: right;
+    }
+
+    /* Grid layout using strict columns */
+    .game-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .game-table thead tr {
+      border-bottom: 2px solid var(--black);
+    }
+
+    .game-table th {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray);
+      padding: 12px 16px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .game-table tbody tr {
+      border-bottom: 1px solid var(--light-gray);
+      transition: background 0.15s;
+    }
+
+    .game-table tbody tr:hover {
+      background: #f0eeeb;
+    }
+
+    .game-table td {
+      padding: 16px;
+      vertical-align: middle;
+    }
+
+    .td-num {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--light-gray);
+      letter-spacing: 1px;
+      width: 40px;
+    }
+
+    .td-icon {
+      font-size: 1.6rem;
+      width: 48px;
+      text-align: center;
+    }
+
+    .td-name {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .td-type {
+      width: 100px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1.5px solid currentColor;
+    }
+
+    .type-badge.puzzle { color: var(--blue); }
+    .type-badge.word { color: var(--red); }
+    .type-badge.strategy { color: #006633; }
+    .type-badge.arcade { color: #cc6600; }
+    .type-badge.classic { color: #663399; }
+    .type-badge.skill { color: #006699; }
+
+    .td-desc {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.6;
+      max-width: 400px;
+    }
+
+    .td-action {
+      width: 120px;
+      text-align: right;
+    }
+
+    .play-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--black);
+      border-bottom: 2px solid var(--red);
+      padding-bottom: 1px;
+    }
+
+    .play-link:hover {
+      color: var(--red);
+    }
+
+    /* Color-coded section blocks */
+    .type-block {
+      margin-top: 40px;
+    }
+
+    .type-block-header {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 1px;
+    }
+
+    .type-block-color {
+      width: 12px;
+      align-self: stretch;
+    }
+
+    .type-block-title {
+      background: var(--black);
+      color: var(--white);
+      padding: 8px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      flex: 1;
+    }
+
+    .type-block-n {
+      padding: 8px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray);
+      background: var(--light-gray);
+      letter-spacing: 2px;
+    }
+
+    /* Big cards for the card view */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--black);
+      border: 1px solid var(--black);
+    }
+
+    .g-card {
+      background: var(--white);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .g-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .g-num {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--light-gray);
+    }
+
+    .g-icon { font-size: 1.8rem; }
+
+    .g-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .g-desc {
+      font-size: 11px;
+      color: var(--gray);
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .g-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      text-decoration: none;
+    }
+
+    .g-link::after { content: ' →'; }
+    .g-link:hover { color: var(--black); }
+
+    footer {
+      border-top: 2px solid var(--black);
+    }
+
+    .footer-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      padding: 20px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .footer-center {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+      text-align: center;
+    }
+
+    .footer-right {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    @media (max-width: 900px) {
+      .card-grid { grid-template-columns: 1fr 1fr; }
+      .header-inner { grid-template-columns: 1fr; }
+      .header-meta-col { border-top: 1px solid var(--black); }
+      .game-table { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="rule-top"></div>
+
+  <header>
+    <div class="header-inner">
+      <div class="header-title-col">
+        <span class="overline">Swiss International Style</span>
+        <h1>Fun Free<br>Web Games<br>Hub</h1>
+      </div>
+      <div class="header-meta-col">
+        <div class="meta-item">
+          <span class="meta-label">Total Games</span>
+          <span class="meta-value red">15</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Price</span>
+          <span class="meta-value blue">Free</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Platform</span>
+          <span class="meta-value">Browser</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Download</span>
+          <span class="meta-value">None</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Account</span>
+          <span class="meta-value">Not Required</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Edition</span>
+          <span class="meta-value">V10 · Swiss Grid</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-bar">
+      <div class="cb-red"></div>
+      <div class="cb-blue"></div>
+      <div class="cb-yellow"></div>
+      <div class="cb-black"></div>
+    </div>
+
+    <nav>
+      <div class="nav-inner">
+        <span class="nav-label">Categories</span>
+        <a href="#">Puzzle</a>
+        <a href="#">Strategy</a>
+        <a href="#">Arcade</a>
+        <a href="#">Word</a>
+        <a href="#">Classic</a>
+        <a href="#">Skill</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- Table view (desktop) -->
+    <div class="section-header">
+      <h2>Complete Game Index</h2>
+      <div class="section-count">15</div>
+    </div>
+
+    <table class="game-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th></th>
+          <th>Game</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-num">01</td>
+          <td class="td-icon">💣</td>
+          <td class="td-name">Minesweeper</td>
+          <td class="td-type"><span class="type-badge puzzle">Puzzle</span></td>
+          <td class="td-desc">Reveal all safe cells using logical deduction. Flag every hidden mine to win. Multiple difficulty levels.</td>
+          <td class="td-action"><a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">02</td>
+          <td class="td-icon">🔤</td>
+          <td class="td-name">Wordle</td>
+          <td class="td-type"><span class="type-badge word">Word</span></td>
+          <td class="td-desc">Guess the hidden five-letter word in six attempts. New puzzle every day. New York Times official.</td>
+          <td class="td-action"><a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">03</td>
+          <td class="td-icon">🔢</td>
+          <td class="td-name">Sudoku</td>
+          <td class="td-type"><span class="type-badge puzzle">Puzzle</span></td>
+          <td class="td-desc">Fill every row, column, and 3×3 box with digits 1–9. Logic-only. No arithmetic required.</td>
+          <td class="td-action"><a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">04</td>
+          <td class="td-icon">♟️</td>
+          <td class="td-name">Chess</td>
+          <td class="td-type"><span class="type-badge strategy">Strategy</span></td>
+          <td class="td-desc">The world's foremost strategy game. vs AI or live rated games on Chess.com.</td>
+          <td class="td-action"><a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">05</td>
+          <td class="td-icon">🧮</td>
+          <td class="td-name">2048</td>
+          <td class="td-type"><span class="type-badge puzzle">Puzzle</span></td>
+          <td class="td-desc">Slide and merge exponentially-valued tiles on a 4×4 grid. Target value: 2048.</td>
+          <td class="td-action"><a href="https://2048game.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">06</td>
+          <td class="td-icon">🟦</td>
+          <td class="td-name">Tetris</td>
+          <td class="td-type"><span class="type-badge arcade">Arcade</span></td>
+          <td class="td-desc">Stack falling tetrominoes to clear horizontal lines. Official licensed version. Speed increases over time.</td>
+          <td class="td-action"><a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">07</td>
+          <td class="td-icon">🃏</td>
+          <td class="td-name">Solitaire</td>
+          <td class="td-type"><span class="type-badge classic">Classic</span></td>
+          <td class="td-desc">Klondike solitaire. Move all 52 cards to foundation piles in ascending suit order.</td>
+          <td class="td-action"><a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">08</td>
+          <td class="td-icon">🐍</td>
+          <td class="td-name">Snake</td>
+          <td class="td-type"><span class="type-badge arcade">Arcade</span></td>
+          <td class="td-desc">Guide a growing snake to consume food. Avoid self-collision and boundaries. Reflex-based.</td>
+          <td class="td-action"><a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">09</td>
+          <td class="td-icon">📰</td>
+          <td class="td-name">Crossword</td>
+          <td class="td-type"><span class="type-badge word">Word</span></td>
+          <td class="td-desc">Traditional newspaper-style grid puzzle. Solve across and down clues to fill every square.</td>
+          <td class="td-action"><a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">10</td>
+          <td class="td-icon">🀄</td>
+          <td class="td-name">Mahjong</td>
+          <td class="td-type"><span class="type-badge strategy">Strategy</span></td>
+          <td class="td-desc">Chinese tile-matching puzzle. Pair and remove identical free tiles to clear the pyramid.</td>
+          <td class="td-action"><a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">11</td>
+          <td class="td-icon">👾</td>
+          <td class="td-name">Pac-Man</td>
+          <td class="td-type"><span class="type-badge arcade">Arcade</span></td>
+          <td class="td-desc">Navigate the maze consuming dots. Evade four ghosts. Power pellets reverse the danger.</td>
+          <td class="td-action"><a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">12</td>
+          <td class="td-icon">🔡</td>
+          <td class="td-name">Scrabble</td>
+          <td class="td-type"><span class="type-badge word">Word</span></td>
+          <td class="td-desc">Form words on the board to score points. Leverage double- and triple-word bonus squares.</td>
+          <td class="td-action"><a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">13</td>
+          <td class="td-icon">⌨️</td>
+          <td class="td-name">TypeRacer</td>
+          <td class="td-type"><span class="type-badge skill">Skill</span></td>
+          <td class="td-desc">Multiplayer typing competition. Race real opponents by typing passages with speed and accuracy.</td>
+          <td class="td-action"><a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">14</td>
+          <td class="td-icon">🎴</td>
+          <td class="td-name">Memory Match</td>
+          <td class="td-type"><span class="type-badge classic">Classic</span></td>
+          <td class="td-desc">Flip cards and memorize positions to locate matching pairs. Exercises short-term working memory.</td>
+          <td class="td-action"><a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+        <tr>
+          <td class="td-num">15</td>
+          <td class="td-icon">🎱</td>
+          <td class="td-name">Pinball</td>
+          <td class="td-type"><span class="type-badge arcade">Arcade</span></td>
+          <td class="td-desc">Flipper-controlled ball physics. Hit bumpers and targets. Accumulate high scores through combos.</td>
+          <td class="td-action"><a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-link">Play</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Card grid (always visible, responsive) -->
+    <div style="margin-top: 40px;">
+      <div class="type-block-header" style="margin-bottom:1px;">
+        <div class="type-block-color" style="background:var(--blue);"></div>
+        <div class="type-block-title">Card View</div>
+        <div class="type-block-n">All 15 Games</div>
+      </div>
+
+      <div class="card-grid">
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">01</span>
+            <span class="g-icon">💣</span>
+          </div>
+          <span class="type-badge puzzle" style="margin-bottom:10px;font-size:9px;">Puzzle</span>
+          <h3>Minesweeper</h3>
+          <p class="g-desc">Uncover mines using logic. Flag all to win.</p>
+          <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">02</span>
+            <span class="g-icon">🔤</span>
+          </div>
+          <span class="type-badge word" style="margin-bottom:10px;font-size:9px;">Word</span>
+          <h3>Wordle</h3>
+          <p class="g-desc">Guess the daily 5-letter word in 6 tries.</p>
+          <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">03</span>
+            <span class="g-icon">🔢</span>
+          </div>
+          <span class="type-badge puzzle" style="margin-bottom:10px;font-size:9px;">Puzzle</span>
+          <h3>Sudoku</h3>
+          <p class="g-desc">Fill the 9×9 grid. Logic only. No repeats.</p>
+          <a href="https://sudoku.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">04</span>
+            <span class="g-icon">♟️</span>
+          </div>
+          <span class="type-badge strategy" style="margin-bottom:10px;font-size:9px;">Strategy</span>
+          <h3>Chess</h3>
+          <p class="g-desc">The ancient strategy game. vs AI or live.</p>
+          <a href="https://www.chess.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">05</span>
+            <span class="g-icon">🧮</span>
+          </div>
+          <span class="type-badge puzzle" style="margin-bottom:10px;font-size:9px;">Puzzle</span>
+          <h3>2048</h3>
+          <p class="g-desc">Merge tiles. Reach 2048 on the 4×4 grid.</p>
+          <a href="https://2048game.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">06</span>
+            <span class="g-icon">🟦</span>
+          </div>
+          <span class="type-badge arcade" style="margin-bottom:10px;font-size:9px;">Arcade</span>
+          <h3>Tetris</h3>
+          <p class="g-desc">Stack falling blocks. Clear lines. Survive.</p>
+          <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">07</span>
+            <span class="g-icon">🃏</span>
+          </div>
+          <span class="type-badge classic" style="margin-bottom:10px;font-size:9px;">Classic</span>
+          <h3>Solitaire</h3>
+          <p class="g-desc">Klondike. Sort all cards to foundations.</p>
+          <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">08</span>
+            <span class="g-icon">🐍</span>
+          </div>
+          <span class="type-badge arcade" style="margin-bottom:10px;font-size:9px;">Arcade</span>
+          <h3>Snake</h3>
+          <p class="g-desc">Eat, grow, don't hit yourself. Reflex test.</p>
+          <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">09</span>
+            <span class="g-icon">📰</span>
+          </div>
+          <span class="type-badge word" style="margin-bottom:10px;font-size:9px;">Word</span>
+          <h3>Crossword</h3>
+          <p class="g-desc">Solve clues across and down to fill grid.</p>
+          <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">10</span>
+            <span class="g-icon">🀄</span>
+          </div>
+          <span class="type-badge strategy" style="margin-bottom:10px;font-size:9px;">Strategy</span>
+          <h3>Mahjong</h3>
+          <p class="g-desc">Match pairs of tiles to clear the board.</p>
+          <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">11</span>
+            <span class="g-icon">👾</span>
+          </div>
+          <span class="type-badge arcade" style="margin-bottom:10px;font-size:9px;">Arcade</span>
+          <h3>Pac-Man</h3>
+          <p class="g-desc">Eat dots. Avoid ghosts. Power up.</p>
+          <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">12</span>
+            <span class="g-icon">🔡</span>
+          </div>
+          <span class="type-badge word" style="margin-bottom:10px;font-size:9px;">Word</span>
+          <h3>Scrabble</h3>
+          <p class="g-desc">Build words. Score big. Use bonus squares.</p>
+          <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">13</span>
+            <span class="g-icon">⌨️</span>
+          </div>
+          <span class="type-badge skill" style="margin-bottom:10px;font-size:9px;">Skill</span>
+          <h3>TypeRacer</h3>
+          <p class="g-desc">Race live players. Type fast. Improve WPM.</p>
+          <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">14</span>
+            <span class="g-icon">🎴</span>
+          </div>
+          <span class="type-badge classic" style="margin-bottom:10px;font-size:9px;">Classic</span>
+          <h3>Memory Match</h3>
+          <p class="g-desc">Flip cards. Find matching pairs by memory.</p>
+          <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+        <div class="g-card">
+          <div class="g-card-top">
+            <span class="g-num">15</span>
+            <span class="g-icon">🎱</span>
+          </div>
+          <span class="type-badge arcade" style="margin-bottom:10px;font-size:9px;">Arcade</span>
+          <h3>Pinball</h3>
+          <p class="g-desc">Flippers. Ball. Targets. Score. Repeat.</p>
+          <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="g-link">Play</a>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">Fun Free Web Games Hub</div>
+      <div class="footer-center">All games are external links · Free · No download · No tracking</div>
+      <div class="footer-right">V10 Swiss Grid</div>
+    </div>
+    <div class="color-bar"></div>
+  </footer>
+
+</body>
+</html>

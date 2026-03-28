@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === BOLD MAGAZINE / MODERN EDITORIAL STYLE === */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafafa;
+      --accent: #ff3d00;
+      --accent2: #0066ff;
+      --gray-1: #1c1c1c;
+      --gray-2: #333;
+      --gray-3: #888;
+      --gray-4: #ccc;
+      --gray-5: #f0f0f0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Top bar */
+    .top-strip {
+      background: var(--black);
+      color: var(--white);
+      padding: 6px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .live-dot {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+
+    /* Hero header */
+    header {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .hero {
+      background: var(--black);
+      color: var(--white);
+      padding: 60px 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: end;
+      min-height: 340px;
+    }
+
+    .hero-left h1 {
+      font-family: 'Bebas Neue', Impact, sans-serif;
+      font-size: clamp(4rem, 8vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      color: var(--white);
+    }
+
+    .hero-left h1 em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .hero-right {
+      padding-bottom: 8px;
+    }
+
+    .hero-right .big-stat {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 6rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .hero-right .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+    }
+
+    .hero-right p {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--gray-4);
+      line-height: 1.7;
+      max-width: 340px;
+    }
+
+    /* Category pills */
+    .category-bar {
+      background: var(--gray-5);
+      padding: 16px 30px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      overflow-x: auto;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .cat-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+
+    .cat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: default;
+      white-space: nowrap;
+      border: 2px solid transparent;
+    }
+
+    .cat-pill.active { background: var(--black); color: var(--white); }
+    .cat-pill:not(.active) { background: var(--white); color: var(--black); border-color: #e0e0e0; }
+
+    /* Main content */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 30px 60px;
+    }
+
+    /* Big featured card */
+    .feature-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 2px;
+      margin: 30px 0 2px;
+    }
+
+    .feature-card {
+      background: var(--gray-5);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 280px;
+    }
+
+    .feature-card.big {
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .feature-card.big h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .feature-card.big p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--gray-4);
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    .card-emoji-bg {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 5rem;
+      opacity: 0.15;
+    }
+
+    .tag-chip {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      margin-bottom: 12px;
+    }
+
+    .feature-card .tag-chip.blue { background: var(--accent2); }
+
+    .feature-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .feature-card .mini-desc {
+      font-size: 0.8rem;
+      color: var(--gray-2);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: inherit;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .cta-link.on-dark { color: var(--accent); }
+    .cta-link::after { content: '→'; }
+
+    .cta-link:hover { opacity: 0.7; }
+
+    /* Grid of remaining cards */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+      padding: 24px 0 12px;
+      border-top: 2px solid var(--gray-4);
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-count {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--gray-4);
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 2px;
+    }
+
+    .game-card {
+      background: var(--gray-5);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .game-card:hover {
+      background: #e8e8e8;
+    }
+
+    .card-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3rem;
+      color: var(--gray-4);
+      line-height: 1;
+      position: absolute;
+      top: 12px;
+      right: 16px;
+    }
+
+    .card-type-strip {
+      width: 3px;
+      height: 30px;
+      background: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .card-type-strip.blue { background: var(--accent2); }
+    .card-type-strip.green { background: #00c878; }
+    .card-type-strip.yellow { background: #f5a300; }
+
+    .game-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .cat-name {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray-3);
+      margin-bottom: 10px;
+    }
+
+    .game-card p {
+      font-size: 0.78rem;
+      color: var(--gray-2);
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 14px;
+    }
+
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--black);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card-link::after { content: '→'; }
+    .card-link:hover { color: var(--accent); }
+
+    footer {
+      background: var(--black);
+      color: var(--gray-3);
+      padding: 24px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    footer .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      color: var(--white);
+    }
+
+    footer .accent { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .feature-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-strip">
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      <span>All games live</span>
+    </div>
+    <span>15 curated games · Free · No download</span>
+    <span>V8 · Magazine Edition</span>
+  </div>
+
+  <header>
+    <div class="hero">
+      <div class="hero-left">
+        <h1>Fun<br>Free<br><em>Web</em><br>Games<br>Hub</h1>
+      </div>
+      <div class="hero-right">
+        <div class="big-stat">15</div>
+        <div class="stat-label">Browser Games</div>
+        <p>Handpicked free games you can play instantly in any browser. Zero downloads. Zero cost. Pure entertainment.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="category-bar">
+    <span class="cat-label">Filter:</span>
+    <span class="cat-pill active">All</span>
+    <span class="cat-pill">🧩 Puzzle</span>
+    <span class="cat-pill">♟️ Strategy</span>
+    <span class="cat-pill">👾 Arcade</span>
+    <span class="cat-pill">🔤 Word</span>
+    <span class="cat-pill">🃏 Classic</span>
+    <span class="cat-pill">⌨️ Skill</span>
+  </div>
+
+  <main>
+
+    <!-- Featured cards -->
+    <div class="feature-row">
+
+      <div class="feature-card big">
+        <div class="card-emoji-bg">🔤</div>
+        <span class="tag-chip">Editor's Pick</span>
+        <h2>Wordle</h2>
+        <p>The New York Times' daily five-letter word puzzle. Six guesses to crack the code. Join millions of players each morning.</p>
+        <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="cta-link on-dark">Play Wordle</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-emoji-bg">♟️</div>
+        <span class="tag-chip blue">Strategy</span>
+        <h3>Chess</h3>
+        <p class="mini-desc">Battle AI or live opponents on the world's #1 chess platform.</p>
+        <a href="https://www.chess.com/" target="_blank" rel="noopener" class="cta-link">Play</a>
+      </div>
+
+      <div class="feature-card">
+        <div class="card-emoji-bg">🟦</div>
+        <span class="tag-chip">Arcade</span>
+        <h3>Tetris</h3>
+        <p class="mini-desc">The official Tetris game in your browser. Stack, clear, survive.</p>
+        <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="cta-link">Play</a>
+      </div>
+
+    </div>
+
+    <div class="section-label">
+      <span>All Games Directory</span>
+      <span class="section-count">15</span>
+    </div>
+
+    <div class="game-grid">
+
+      <div class="game-card">
+        <span class="card-num">01</span>
+        <div class="card-type-strip"></div>
+        <h3>Minesweeper</h3>
+        <span class="cat-name">Puzzle</span>
+        <p>Reveal the grid using logic. Flag all hidden mines to win. Beginner to expert difficulty.</p>
+        <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">02</span>
+        <div class="card-type-strip green"></div>
+        <h3>Sudoku</h3>
+        <span class="cat-name">Puzzle</span>
+        <p>Fill 9×9 number grid with digits 1–9. Logic-only puzzle. No arithmetic needed.</p>
+        <a href="https://sudoku.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">03</span>
+        <div class="card-type-strip green"></div>
+        <h3>2048</h3>
+        <span class="cat-name">Puzzle</span>
+        <p>Slide and merge numbered tiles on a 4×4 grid. Reach 2048 — or go higher.</p>
+        <a href="https://2048game.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">04</span>
+        <div class="card-type-strip blue"></div>
+        <h3>Mahjong</h3>
+        <span class="cat-name">Strategy</span>
+        <p>Ancient tile-matching puzzle. Match pairs of free tiles to clear the entire board.</p>
+        <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">05</span>
+        <div class="card-type-strip"></div>
+        <h3>Snake</h3>
+        <span class="cat-name">Arcade</span>
+        <p>Navigate the growing snake. Eat food. Avoid walls and your own tail. Pure reflex.</p>
+        <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">06</span>
+        <div class="card-type-strip"></div>
+        <h3>Pac-Man</h3>
+        <span class="cat-name">Arcade</span>
+        <p>Eat all the dots, dodge ghosts. Grab power pellets to flip the danger.</p>
+        <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">07</span>
+        <div class="card-type-strip"></div>
+        <h3>Pinball</h3>
+        <span class="cat-name">Arcade</span>
+        <p>Use flippers to keep the ball alive. Hit targets, trigger bonuses, stack points.</p>
+        <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">08</span>
+        <div class="card-type-strip yellow"></div>
+        <h3>Crossword</h3>
+        <span class="cat-name">Word</span>
+        <p>Classic grid word puzzle. Solve across and down clues to complete the board.</p>
+        <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">09</span>
+        <div class="card-type-strip yellow"></div>
+        <h3>Scrabble</h3>
+        <span class="cat-name">Word</span>
+        <p>Form high-scoring words using letter tiles. Exploit bonus squares to dominate.</p>
+        <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">10</span>
+        <div class="card-type-strip"></div>
+        <h3>Solitaire</h3>
+        <span class="cat-name">Classic</span>
+        <p>Klondike card sorting. Move all 52 cards to foundation piles by suit in order.</p>
+        <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">11</span>
+        <div class="card-type-strip"></div>
+        <h3>Memory Match</h3>
+        <span class="cat-name">Classic</span>
+        <p>Flip cards and find all matching pairs from memory. Simple, satisfying brain training.</p>
+        <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+      <div class="game-card">
+        <span class="card-num">12</span>
+        <div class="card-type-strip green"></div>
+        <h3>TypeRacer</h3>
+        <span class="cat-name">Skill</span>
+        <p>Race real players by typing. Measure and improve your words-per-minute speed.</p>
+        <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="card-link">Play</a>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <span class="logo">FFWG <span class="accent">HUB</span></span>
+    <span>All games are external links — free, browser-native, no downloads</span>
+    <span>V8 · Bold Magazine Edition</span>
+  </footer>
+
+</body>
+</html>

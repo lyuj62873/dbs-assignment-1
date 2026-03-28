@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === RETRO 8-BIT / NES STYLE === */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    :root {
+      --bg: #1a1a2e;
+      --bg2: #16213e;
+      --yellow: #f7b731;
+      --red: #e84545;
+      --green: #0be881;
+      --blue: #03dac6;
+      --white: #eef2ff;
+      --gray: #888;
+      --pixel: 4px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; image-rendering: pixelated; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--white);
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      font-size: 8px;
+      line-height: 2;
+    }
+
+    /* Pixel border mixin */
+    .pixel-box {
+      border: var(--pixel) solid #fff;
+      box-shadow:
+        0 0 0 var(--pixel) #000,
+        0 var(--pixel) 0 calc(var(--pixel)*2) #000;
+    }
+
+    header {
+      background: var(--bg2);
+      padding: 32px 16px 24px;
+      text-align: center;
+      border-bottom: var(--pixel) solid var(--yellow);
+      position: relative;
+    }
+
+    .blink {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .press-start {
+      color: var(--yellow);
+      font-size: 6px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    header h1 {
+      font-size: clamp(12px, 2.5vw, 20px);
+      color: var(--yellow);
+      text-shadow: var(--pixel) var(--pixel) 0 var(--red);
+      line-height: 2;
+      margin-bottom: 16px;
+    }
+
+    header h1 span {
+      color: var(--green);
+      text-shadow: var(--pixel) var(--pixel) 0 #007;
+    }
+
+    .subtitle {
+      font-size: 6px;
+      color: var(--gray);
+      line-height: 2.5;
+    }
+
+    .hearts {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 12px;
+    }
+
+    .heart {
+      font-size: 10px;
+      color: var(--red);
+    }
+
+    .score-bar {
+      background: #000;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: var(--pixel) solid var(--yellow);
+    }
+
+    .score-item {
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 6px;
+      color: var(--gray);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .score-value {
+      font-size: 10px;
+      color: var(--yellow);
+    }
+
+    main {
+      padding: 24px 12px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      font-size: 10px;
+      color: var(--green);
+      margin-bottom: 20px;
+      text-align: center;
+      text-shadow: 2px 2px 0 #004;
+    }
+
+    .section-header::before { content: '▶ '; color: var(--yellow); }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .game-card {
+      background: var(--bg2);
+      border: var(--pixel) solid var(--white);
+      box-shadow: var(--pixel) var(--pixel) 0 #000;
+      padding: 12px;
+      position: relative;
+      transition: transform 0.1s;
+    }
+
+    .game-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .game-card-top {
+      background: #000;
+      margin: -12px -12px 10px -12px;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--pixel) solid var(--yellow);
+    }
+
+    .game-title {
+      font-size: 7px;
+      color: var(--yellow);
+    }
+
+    .game-num {
+      font-size: 6px;
+      color: var(--gray);
+    }
+
+    .pixel-sprite {
+      font-size: 24px;
+      display: block;
+      text-align: center;
+      margin: 8px 0;
+      image-rendering: pixelated;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--red);
+      color: #fff;
+      font-size: 5px;
+      padding: 2px 6px;
+      margin-bottom: 8px;
+    }
+
+    .game-desc {
+      font-size: 6px;
+      color: #aaa;
+      line-height: 2.2;
+      margin-bottom: 12px;
+    }
+
+    .hp-bar {
+      height: var(--pixel);
+      background: #333;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hp-fill {
+      height: 100%;
+      background: var(--green);
+    }
+
+    .play-btn {
+      display: block;
+      background: var(--red);
+      color: #fff;
+      text-decoration: none;
+      font-size: 7px;
+      padding: 8px;
+      text-align: center;
+      border: var(--pixel) solid #fff;
+      box-shadow: var(--pixel) var(--pixel) 0 #000;
+      transition: all 0.1s;
+    }
+
+    .play-btn:hover {
+      background: var(--yellow);
+      color: #000;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 #000;
+    }
+
+    .play-btn::before { content: '▶ '; }
+
+    .pixel-divider {
+      text-align: center;
+      color: var(--yellow);
+      font-size: 8px;
+      margin: 30px 0;
+      letter-spacing: 4px;
+    }
+
+    footer {
+      background: #000;
+      border-top: var(--pixel) solid var(--yellow);
+      padding: 20px 16px;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 6px;
+      color: var(--gray);
+      line-height: 3;
+    }
+
+    footer .logo {
+      color: var(--yellow);
+      font-size: 8px;
+      text-shadow: 2px 2px 0 var(--red);
+    }
+
+    .copyright {
+      font-size: 5px;
+      color: #555;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="press-start blink">INSERT COIN TO PLAY</span>
+    <h1>FUN FREE<br><span>WEB GAMES</span><br>HUB</h1>
+    <p class="subtitle">★ 15 GAMES ★ 0 DOWNLOADS ★ ALL FREE ★</p>
+    <div class="hearts">
+      <span class="heart">♥</span>
+      <span class="heart">♥</span>
+      <span class="heart">♥</span>
+    </div>
+  </header>
+
+  <div class="score-bar">
+    <div class="score-item">
+      <span class="score-label">GAMES</span>
+      <span class="score-value">15</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label">SCORE</span>
+      <span class="score-value">000000</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label">HI-SCORE</span>
+      <span class="score-value">999999</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label">LEVEL</span>
+      <span class="score-value">01</span>
+    </div>
+  </div>
+
+  <main>
+    <div class="section-header">SELECT GAME</div>
+
+    <div class="game-grid">
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">MINESWEEPER</span>
+          <span class="game-num">LV.01</span>
+        </div>
+        <span class="pixel-sprite">💣</span>
+        <span class="tag">PUZZLE</span>
+        <p class="game-desc">AVOID MINES.<br>FLAG THEM ALL.<br>DON'T EXPLODE.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:80%"></div></div>
+        <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">WORDLE</span>
+          <span class="game-num">LV.02</span>
+        </div>
+        <span class="pixel-sprite">🔤</span>
+        <span class="tag">WORD</span>
+        <p class="game-desc">GUESS 5 LETTERS.<br>6 TRIES ONLY.<br>DAILY CHALLENGE.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:90%"></div></div>
+        <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">SUDOKU</span>
+          <span class="game-num">LV.03</span>
+        </div>
+        <span class="pixel-sprite">🔢</span>
+        <span class="tag">PUZZLE</span>
+        <p class="game-desc">FILL THE GRID.<br>1 TO 9.<br>USE LOGIC.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:70%"></div></div>
+        <a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">CHESS</span>
+          <span class="game-num">LV.04</span>
+        </div>
+        <span class="pixel-sprite">♟️</span>
+        <span class="tag">STRATEGY</span>
+        <p class="game-desc">CHECKMATE THE KING.<br>VS AI OR HUMANS.<br>ANCIENT BATTLE.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:95%"></div></div>
+        <a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">2048</span>
+          <span class="game-num">LV.05</span>
+        </div>
+        <span class="pixel-sprite">🧮</span>
+        <span class="tag">PUZZLE</span>
+        <p class="game-desc">MERGE TILES.<br>REACH 2048.<br>THEN KEEP GOING.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:65%"></div></div>
+        <a href="https://2048game.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">TETRIS</span>
+          <span class="game-num">LV.06</span>
+        </div>
+        <span class="pixel-sprite">🟦</span>
+        <span class="tag">ARCADE</span>
+        <p class="game-desc">STACK THE BLOCKS.<br>CLEAR THE LINES.<br>DON'T TOP OUT.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:100%"></div></div>
+        <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">SOLITAIRE</span>
+          <span class="game-num">LV.07</span>
+        </div>
+        <span class="pixel-sprite">🃏</span>
+        <span class="tag">CLASSIC</span>
+        <p class="game-desc">STACK THE CARDS.<br>SUIT BY SUIT.<br>KLONDIKE RULES.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:75%"></div></div>
+        <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">SNAKE</span>
+          <span class="game-num">LV.08</span>
+        </div>
+        <span class="pixel-sprite">🐍</span>
+        <span class="tag">ARCADE</span>
+        <p class="game-desc">EAT THE FOOD.<br>GROW LONGER.<br>AVOID YOURSELF.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:85%"></div></div>
+        <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">CROSSWORD</span>
+          <span class="game-num">LV.09</span>
+        </div>
+        <span class="pixel-sprite">📰</span>
+        <span class="tag">WORD</span>
+        <p class="game-desc">READ THE CLUES.<br>FILL THE GRID.<br>ACROSS AND DOWN.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:60%"></div></div>
+        <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">MAHJONG</span>
+          <span class="game-num">LV.10</span>
+        </div>
+        <span class="pixel-sprite">🀄</span>
+        <span class="tag">STRATEGY</span>
+        <p class="game-desc">MATCH THE TILES.<br>CLEAR THE BOARD.<br>ANCIENT WISDOM.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:72%"></div></div>
+        <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">PAC-MAN</span>
+          <span class="game-num">LV.11</span>
+        </div>
+        <span class="pixel-sprite">👾</span>
+        <span class="tag">ARCADE</span>
+        <p class="game-desc">EAT ALL THE DOTS.<br>FEAR THE GHOSTS.<br>WAKA WAKA WAKA.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:88%"></div></div>
+        <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">SCRABBLE</span>
+          <span class="game-num">LV.12</span>
+        </div>
+        <span class="pixel-sprite">🔡</span>
+        <span class="tag">WORD</span>
+        <p class="game-desc">BUILD WORDS.<br>SCORE POINTS.<br>USE TRIPLE WORD.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:78%"></div></div>
+        <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">TYPERACER</span>
+          <span class="game-num">LV.13</span>
+        </div>
+        <span class="pixel-sprite">⌨️</span>
+        <span class="tag">SKILL</span>
+        <p class="game-desc">TYPE FAST.<br>RACE OTHERS.<br>BEAT YOUR WPM.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:82%"></div></div>
+        <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">MEMORY MATCH</span>
+          <span class="game-num">LV.14</span>
+        </div>
+        <span class="pixel-sprite">🎴</span>
+        <span class="tag">CLASSIC</span>
+        <p class="game-desc">FLIP THE CARDS.<br>FIND THE PAIRS.<br>REMEMBER THEM.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:55%"></div></div>
+        <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-top">
+          <span class="game-title">PINBALL</span>
+          <span class="game-num">LV.15</span>
+        </div>
+        <span class="pixel-sprite">🎱</span>
+        <span class="tag">ARCADE</span>
+        <p class="game-desc">HIT THE TARGETS.<br>USE THE FLIPPERS.<br>SCORE BIG POINTS.</p>
+        <div class="hp-bar"><div class="hp-fill" style="width:68%"></div></div>
+        <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-btn">PLAY</a>
+      </div>
+
+    </div>
+
+    <div class="pixel-divider">★ ★ ★ GAME OVER? PICK ANOTHER! ★ ★ ★</div>
+
+  </main>
+
+  <footer>
+    <div class="logo">FUN FREE WEB GAMES HUB</div>
+    <p>ALL GAMES FREE · NO DOWNLOADS · BROWSER NATIVE</p>
+    <p class="copyright">© PRESS START 2P · V3 RETRO 8-BIT EDITION · ALL RIGHTS RESERVED</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === TERMINAL / HACKER STYLE === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #00ff41;
+      --green-dim: #00aa2a;
+      --green-dark: #003d0f;
+      --green-glow: rgba(0, 255, 65, 0.15);
+      --bg: #0a0f0a;
+      --text: #ccffcc;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--green);
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* CRT scanline effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.08) 0px,
+        rgba(0,0,0,0.08) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* CRT flicker */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      92% { opacity: 1; }
+      93% { opacity: 0.97; }
+      94% { opacity: 1; }
+    }
+
+    body { animation: flicker 8s infinite; }
+
+    header {
+      border-bottom: 1px solid var(--green-dim);
+      padding: 20px;
+      background: linear-gradient(180deg, rgba(0,255,65,0.05) 0%, transparent 100%);
+    }
+
+    .prompt-line {
+      color: var(--green-dim);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .prompt-line span { color: var(--green); }
+
+    pre.ascii-art {
+      color: var(--green);
+      font-size: clamp(6px, 1.2vw, 11px);
+      line-height: 1.2;
+      text-shadow: 0 0 8px var(--green);
+      margin: 10px 0;
+    }
+
+    .blinking-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--green);
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .boot-text {
+      font-size: 11px;
+      color: var(--green-dim);
+      margin-top: 10px;
+    }
+
+    .boot-text .ok { color: var(--green); font-weight: bold; }
+    .boot-text .warn { color: #ffff00; }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+    }
+
+    .terminal-block {
+      border: 1px solid var(--green-dark);
+      margin-bottom: 6px;
+    }
+
+    .terminal-title-bar {
+      background: var(--green-dark);
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--green);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--green-dim);
+    }
+
+    .cmd-output {
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .cmd-line {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .prompt { color: var(--green-dim); white-space: nowrap; }
+    .cmd { color: var(--green); }
+    .arg { color: #00ccff; }
+    .flag { color: #ffff00; }
+
+    .output-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    .output-table th {
+      color: var(--green-dim);
+      font-weight: normal;
+      text-align: left;
+      padding: 4px 12px;
+      border-bottom: 1px solid var(--green-dark);
+      font-size: 11px;
+    }
+
+    .output-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(0,100,20,0.2);
+      vertical-align: top;
+    }
+
+    .output-table tr:hover td {
+      background: var(--green-glow);
+    }
+
+    .col-id { color: var(--green-dim); font-size: 11px; }
+    .col-name { color: var(--green); font-weight: bold; }
+    .col-type { color: #ffff00; font-size: 11px; }
+    .col-desc { color: var(--text); font-size: 11px; line-height: 1.6; }
+    .col-status { color: #00ff41; font-size: 11px; }
+
+    .play-link {
+      display: inline-block;
+      color: #00ccff;
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    .play-link:hover {
+      color: var(--green);
+      text-decoration: underline;
+    }
+
+    .play-link::before { content: '$ '; color: var(--green-dim); }
+
+    .status-ok {
+      color: #00ff41;
+    }
+
+    .status-ok::before { content: '['; }
+    .status-ok::after { content: ']'; }
+
+    .section-cmd {
+      margin: 20px 0 10px;
+      font-size: 12px;
+    }
+
+    .section-cmd .prompt { color: var(--green-dim); }
+    .section-cmd .cmd { color: var(--green); }
+
+    .info-panel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1px;
+      background: var(--green-dark);
+      border: 1px solid var(--green-dark);
+      margin-bottom: 16px;
+    }
+
+    .info-cell {
+      background: var(--bg);
+      padding: 8px 12px;
+    }
+
+    .info-key {
+      font-size: 10px;
+      color: var(--green-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-val {
+      font-size: 13px;
+      color: var(--green);
+      text-shadow: 0 0 6px var(--green);
+    }
+
+    .search-line {
+      margin: 10px 0;
+      font-size: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input-fake {
+      border: 1px solid var(--green-dim);
+      background: transparent;
+      color: var(--green);
+      padding: 4px 8px;
+      font-family: inherit;
+      font-size: 12px;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .help-text {
+      margin-top: 20px;
+      font-size: 11px;
+      color: var(--green-dim);
+      border-top: 1px solid var(--green-dark);
+      padding-top: 10px;
+    }
+
+    .help-text span { color: var(--green); }
+
+    footer {
+      border-top: 1px solid var(--green-dark);
+      padding: 12px 20px;
+      font-size: 11px;
+      color: var(--green-dim);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer span { color: var(--green); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="prompt-line">
+      <span>root@ffwg-hub</span>:~# ./games --list --all --free
+    </div>
+
+    <pre class="ascii-art">
+███████╗███████╗██╗    ██╗ ██████╗     ██╗  ██╗██╗   ██╗██████╗
+██╔════╝██╔════╝██║    ██║██╔════╝     ██║  ██║██║   ██║██╔══██╗
+█████╗  █████╗  ██║ █╗ ██║██║  ███╗   ███████║██║   ██║██████╔╝
+██╔══╝  ██╔══╝  ██║███╗██║██║   ██║   ██╔══██║██║   ██║██╔══██╗
+██║     ██║     ╚███╔███╔╝╚██████╔╝   ██║  ██║╚██████╔╝██████╔╝
+╚═╝     ╚═╝      ╚══╝╚══╝  ╚═════╝    ╚═╝  ╚═╝ ╚═════╝ ╚═════╝
+                                 GAMES HUB v6.0.0 — TERMINAL EDITION
+    </pre>
+
+    <div class="boot-text">
+      Booting game index... <span class="ok"> OK </span><br>
+      Loading 15 games...... <span class="ok"> OK </span><br>
+      Verifying links....... <span class="ok"> OK </span><br>
+      Tracker blocked....... <span class="ok"> OK </span><br>
+      Download required..... <span class="warn"> NONE </span> &nbsp; <span class="ok">(all browser-native)</span><br>
+      System ready <span class="blinking-cursor"></span>
+    </div>
+  </header>
+
+  <main>
+    <div class="info-panel">
+      <div class="info-cell">
+        <div class="info-key">Total Games</div>
+        <div class="info-val">15</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-key">Price</div>
+        <div class="info-val">$0.00</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-key">Downloads</div>
+        <div class="info-val">0</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-key">Trackers</div>
+        <div class="info-val">0</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-key">Platform</div>
+        <div class="info-val">Browser</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-key">Status</div>
+        <div class="info-val">Online</div>
+      </div>
+    </div>
+
+    <div class="section-cmd">
+      <span class="prompt">root@ffwg-hub:~# </span>
+      <span class="cmd">ls</span> <span class="arg">./games/</span> <span class="flag">--sort=id --verbose</span>
+    </div>
+
+    <div class="terminal-block">
+      <div class="terminal-title-bar">
+        <span>games-directory — 15 entries</span>
+        <div class="window-controls">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+      <div class="cmd-output">
+        <table class="output-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>TYPE</th>
+              <th>DESCRIPTION</th>
+              <th>STATUS</th>
+              <th>EXEC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-id">001</td>
+              <td class="col-name">minesweeper</td>
+              <td class="col-type">puzzle</td>
+              <td class="col-desc">Uncover safe cells. Flag all mines. Logic + probability = survival.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">002</td>
+              <td class="col-name">wordle</td>
+              <td class="col-type">word</td>
+              <td class="col-desc">Decode the 5-letter word in 6 guesses. NYT official. Daily refresh.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">003</td>
+              <td class="col-name">sudoku</td>
+              <td class="col-type">puzzle</td>
+              <td class="col-desc">Fill 9×9 grid — every row, column, box contains 1–9. No repeats.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">004</td>
+              <td class="col-name">chess</td>
+              <td class="col-type">strategy</td>
+              <td class="col-desc">Full-featured chess. vs AI or live. Rated games. Chess.com platform.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">005</td>
+              <td class="col-name">2048</td>
+              <td class="col-type">puzzle</td>
+              <td class="col-desc">Merge tiles on 4×4 grid. Target: 2048. Actual limit: your patience.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://2048game.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">006</td>
+              <td class="col-name">tetris</td>
+              <td class="col-type">arcade</td>
+              <td class="col-desc">Official Tetris in-browser. Stack tetrominoes. Clear lines before overflow.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">007</td>
+              <td class="col-name">solitaire</td>
+              <td class="col-type">classic</td>
+              <td class="col-desc">Klondike card solitaire. Sort all 52 cards into suit-ordered foundations.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">008</td>
+              <td class="col-name">snake</td>
+              <td class="col-type">arcade</td>
+              <td class="col-desc">Navigate serpent. Eat food. Grow. Avoid walls and own body. Reflex test.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">009</td>
+              <td class="col-name">crossword</td>
+              <td class="col-type">word</td>
+              <td class="col-desc">Grid-based word puzzle. Solve across and down clues. Vocabulary builder.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">010</td>
+              <td class="col-name">mahjong</td>
+              <td class="col-type">strategy</td>
+              <td class="col-desc">Pair matching tile puzzle. Remove all tiles from board. Ancient Chinese game.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">011</td>
+              <td class="col-name">pac-man</td>
+              <td class="col-type">arcade</td>
+              <td class="col-desc">Eat dots. Avoid ghosts. Power pellets grant temporary invulnerability.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">012</td>
+              <td class="col-name">scrabble</td>
+              <td class="col-type">word</td>
+              <td class="col-desc">Form high-value words on board. Use DWS/TWS squares strategically.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">013</td>
+              <td class="col-name">typeracer</td>
+              <td class="col-type">skill</td>
+              <td class="col-desc">Multiplayer typing race. Accuracy + speed = WPM. Real opponents online.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">014</td>
+              <td class="col-name">memory-match</td>
+              <td class="col-type">classic</td>
+              <td class="col-desc">Flip cards, memorize positions, find matching pairs. Trains working memory.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+            <tr>
+              <td class="col-id">015</td>
+              <td class="col-name">pinball</td>
+              <td class="col-type">arcade</td>
+              <td class="col-desc">Flipper-controlled ball physics. Hit targets, rack up combos, score big.</td>
+              <td class="col-status"><span class="status-ok"> ONLINE </span></td>
+              <td><a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-link">open</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="help-text">
+      <span>15</span> games listed. All free. All browser-native. No downloads. No tracking.<br>
+      Type <span>CTRL+click</span> to open in new tab. Use <span>back button</span> to return to hub.
+    </div>
+  </main>
+
+  <footer>
+    <span><span>root@ffwg-hub</span>:~# _ </span>
+    <span>fun-free-web-games-hub v6.0 | terminal edition | GPL-0.0</span>
+    <span>uptime: ∞ | load: 0.00</span>
+  </footer>
+
+</body>
+</html>

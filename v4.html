@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === NEWSPAPER / EDITORIAL STYLE === */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IM+Fell+English&family=Source+Serif+4:wght@300;400;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f4f0e8;
+      color: #1a1a1a;
+      font-family: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Top nameplate bar */
+    .top-bar {
+      border-top: 3px solid #000;
+      border-bottom: 1px solid #000;
+      padding: 4px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-family: 'Source Serif 4', serif;
+      letter-spacing: 1px;
+    }
+
+    .top-bar .date { color: #444; }
+    .top-bar .tagline { font-style: italic; }
+
+    /* Masthead */
+    header {
+      text-align: center;
+      padding: 20px 20px 0;
+      border-bottom: 4px double #000;
+    }
+
+    .edition-line {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle-rule {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 16px;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    .subtitle-rule::before,
+    .subtitle-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #000;
+    }
+
+    /* Navigation bar */
+    nav {
+      border-bottom: 3px solid #000;
+      padding: 6px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #000;
+      text-decoration: none;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-right: 1px solid #aaa;
+    }
+
+    nav a:last-child { border-right: none; }
+    nav a:hover { text-decoration: underline; }
+
+    /* Main layout */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Section header */
+    .section-head {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #000;
+    }
+
+    .section-head h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .kicker {
+      font-size: 8px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #777;
+      font-family: 'Source Serif 4', serif;
+    }
+
+    /* Hero feature — first card spans full width */
+    .hero-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid #999;
+      margin-bottom: 16px;
+    }
+
+    .hero-card-text {
+      padding: 24px;
+      border-right: 1px solid #999;
+    }
+
+    .hero-card-art {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+    }
+
+    .hero-eyebrow {
+      font-size: 8px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #777;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .hero-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .hero-card .byline {
+      font-size: 10px;
+      color: #666;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    .hero-card p {
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: #333;
+    }
+
+    .article-icon {
+      font-size: 5rem;
+      margin-bottom: 8px;
+    }
+
+    /* Column layout for rest of cards */
+    .columns {
+      column-count: 3;
+      column-gap: 0;
+      column-rule: 1px solid #ccc;
+    }
+
+    .article-card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      padding: 16px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 0;
+    }
+
+    .article-card .eyebrow {
+      font-size: 8px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #888;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .article-card h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .article-card .byline {
+      font-size: 9px;
+      color: #888;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    .article-card p {
+      font-size: 12px;
+      color: #444;
+      margin-bottom: 12px;
+      line-height: 1.65;
+    }
+
+    .read-more {
+      display: inline-block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #000;
+      text-decoration: none;
+      border-bottom: 2px solid #000;
+      padding-bottom: 1px;
+    }
+
+    .read-more:hover {
+      color: #444;
+      border-color: #444;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #999;
+      margin: 20px 0;
+    }
+
+    .ad-box {
+      border: 2px solid #000;
+      padding: 12px;
+      text-align: center;
+      margin: 16px 0;
+      background: #fff;
+    }
+
+    .ad-box .ad-label {
+      font-size: 7px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #999;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .ad-box p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+    }
+
+    footer {
+      border-top: 4px double #000;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 9px;
+      color: #666;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: #f4f0e8;
+    }
+
+    @media (max-width: 700px) {
+      .columns { column-count: 1; }
+      .hero-card { grid-template-columns: 1fr; }
+      .hero-card-art { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <span class="date">Saturday, March 28, 2026</span>
+    <span class="tagline">"All the Games Fit to Play"</span>
+    <span>No. 1 · Vol. I</span>
+  </div>
+
+  <header>
+    <div class="edition-line">The Morning Edition</div>
+    <h1>Fun Free Web<br>Games Hub</h1>
+    <div class="subtitle-rule">Fifteen Diversions for the Discerning Player · Entirely Gratis · No Download Required</div>
+  </header>
+
+  <nav>
+    <a href="#">Puzzle</a>
+    <a href="#">Strategy</a>
+    <a href="#">Arcade</a>
+    <a href="#">Word Games</a>
+    <a href="#">Classics</a>
+    <a href="#">Skill</a>
+  </nav>
+
+  <main>
+    <div class="section-head">
+      <span class="kicker">Featured Game of the Day</span>
+      <h2>Today's Top Picks</h2>
+    </div>
+
+    <!-- Hero Card -->
+    <div class="hero-card">
+      <div class="hero-card-text">
+        <span class="hero-eyebrow">★ Editor's Choice · Puzzle</span>
+        <h3>Wordle Sweeps the Nation in Daily Word-Guess Craze</h3>
+        <p class="byline">By the Games Desk | nytimes.com</p>
+        <p>Wordle, the beloved five-letter word puzzle acquired by The New York Times, continues to captivate millions of players daily. Each morning brings a fresh challenge: six attempts to identify a single hidden word. Its elegant simplicity has made it a morning ritual for a generation.</p>
+        <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="read-more">Play Wordle →</a>
+      </div>
+      <div class="hero-card-art">
+        <div class="article-icon">🔤</div>
+        <p style="font-style:italic; font-size:12px; color:#666; text-align:center">Green tiles mean correct.<br>Yellow means wrong position.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="section-head">
+      <span class="kicker">Complete Game Directory</span>
+      <h2>All Fifteen Games</h2>
+    </div>
+
+    <div class="columns">
+
+      <div class="article-card">
+        <span class="eyebrow">Puzzle</span>
+        <h3>Minesweeper</h3>
+        <p class="byline">minesweeper.online</p>
+        <p>The timeless logic puzzle tasks players with uncovering all safe cells while flagging every concealed mine. Choose from beginner, intermediate, or expert boards.</p>
+        <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Puzzle</span>
+        <h3>Sudoku</h3>
+        <p class="byline">sudoku.com</p>
+        <p>The classic numeric grid puzzle demands that each row, column, and 3×3 box contain all digits one through nine. No arithmetic — only pure deductive logic.</p>
+        <a href="https://sudoku.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Strategy</span>
+        <h3>Chess</h3>
+        <p class="byline">chess.com</p>
+        <p>The grandest strategy game known to civilization. Challenge computer opponents or battle live players in rated matches at Chess.com, the world's foremost chess platform.</p>
+        <a href="https://www.chess.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Puzzle</span>
+        <h3>2048</h3>
+        <p class="byline">2048game.com</p>
+        <p>Slide numbered tiles across a 4×4 grid to merge identical values. The mission: reach the elusive 2048 tile. Addictive and maddening in equal measure.</p>
+        <a href="https://2048game.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Arcade</span>
+        <h3>Tetris</h3>
+        <p class="byline">play.tetris.com</p>
+        <p>Alexey Pajitnov's legendary creation — stack falling tetrominoes to clear lines. Officially licensed and browser-playable at the Tetris Company's own portal.</p>
+        <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Classic</span>
+        <h3>Solitaire</h3>
+        <p class="byline">solitairebliss.com</p>
+        <p>Klondike Solitaire remains the world's most-played card game. Arrange suits into foundation piles in ascending order. A reliable companion for idle moments.</p>
+        <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Arcade</span>
+        <h3>Snake</h3>
+        <p class="byline">crazygames.com</p>
+        <p>Steer a growing serpent toward food while avoiding walls and your own elongating tail. The quintessential mobile game, now playable in the browser.</p>
+        <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Word</span>
+        <h3>Crossword</h3>
+        <p class="byline">dictionary.com</p>
+        <p>Test your vocabulary and lateral thinking with a traditional crossword grid. Clues run both across and down. Dictionary.com provides beginner-friendly puzzles daily.</p>
+        <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Strategy</span>
+        <h3>Mahjong</h3>
+        <p class="byline">crazygames.com</p>
+        <p>Match pairs of free tiles to clear the board in this ancient Chinese puzzle tradition. Hundreds of layouts offer fresh challenges to returning players.</p>
+        <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Arcade</span>
+        <h3>Pac-Man</h3>
+        <p class="byline">crazygames.com</p>
+        <p>Navigate the legendary yellow circle through a dot-filled maze. Evade Blinky, Pinky, Inky, and Clyde. Power pellets grant temporary dominion over the ghosts.</p>
+        <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Word</span>
+        <h3>Scrabble</h3>
+        <p class="byline">playscrabble.com</p>
+        <p>The beloved board game adapted for the browser. Place letter tiles to form words, exploit double- and triple-score squares, and outmanoeuvre your opponent.</p>
+        <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Skill</span>
+        <h3>TypeRacer</h3>
+        <p class="byline">play.typeracer.com</p>
+        <p>Race real opponents by transcribing text passages with maximum accuracy and velocity. Measure your words-per-minute and chart your improvement over time.</p>
+        <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Classic</span>
+        <h3>Memory Match</h3>
+        <p class="byline">memorymatching.com</p>
+        <p>Flip cards and memorize their positions to find matching pairs. Deceptively simple yet an excellent exercise for concentration and short-term recall.</p>
+        <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+      <div class="article-card">
+        <span class="eyebrow">Arcade</span>
+        <h3>Pinball</h3>
+        <p class="byline">247pinball.com</p>
+        <p>Control dual flippers to keep a steel ball in motion. Strike targets, activate multi-ball sequences, and accumulate points in the browser-based arcade classic.</p>
+        <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="read-more">Play Game →</a>
+      </div>
+
+    </div>
+
+    <div class="ad-box">
+      <span class="ad-label">Notice</span>
+      <p>"All games on this page are free, browser-based, and require no download or registration."</p>
+    </div>
+
+  </main>
+
+  <footer>
+    Fun Free Web Games Hub &nbsp;·&nbsp; All Games External &nbsp;·&nbsp; No Cookies &nbsp;·&nbsp; No Tracking &nbsp;·&nbsp; V4 Newspaper Edition
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === BRUTALIST STYLE === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f0e8;
+      font-family: 'Arial Black', Arial, sans-serif;
+      color: #000;
+      padding: 0;
+    }
+
+    header {
+      background: #000;
+      color: #fff;
+      padding: 40px 30px;
+      border-bottom: 8px solid #ff0000;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    header h1 span {
+      color: #ff0000;
+    }
+
+    header p {
+      margin-top: 16px;
+      font-size: 1.1rem;
+      font-weight: 400;
+      font-family: 'Courier New', monospace;
+      color: #ccc;
+      max-width: 600px;
+    }
+
+    nav {
+      background: #ff0000;
+      padding: 12px 30px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      border: 2px solid #fff;
+    }
+
+    nav a:hover {
+      background: #fff;
+      color: #ff0000;
+    }
+
+    main {
+      padding: 40px 30px;
+      max-width: 1400px;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-weight: 700;
+      color: #ff0000;
+      margin-bottom: 8px;
+      font-family: 'Courier New', monospace;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+      border-bottom: 5px solid #000;
+      padding-bottom: 10px;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0;
+      border: 4px solid #000;
+    }
+
+    .game-card {
+      border: 2px solid #000;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      background: #f5f0e8;
+      transition: none;
+    }
+
+    .game-card:nth-child(odd) {
+      background: #fff;
+    }
+
+    .game-card-header {
+      background: #000;
+      color: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .game-number {
+      font-size: 0.65rem;
+      font-family: 'Courier New', monospace;
+      color: #ff0000;
+      font-weight: 700;
+    }
+
+    .game-card-header h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .game-card-body {
+      padding: 16px;
+      flex: 1;
+    }
+
+    .game-tag {
+      display: inline-block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ff0000;
+      border: 2px solid #ff0000;
+      padding: 2px 6px;
+      margin-bottom: 10px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .game-desc {
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    .play-btn {
+      display: block;
+      background: #ff0000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 10px 16px;
+      border: 3px solid #000;
+      text-align: center;
+      transition: none;
+    }
+
+    .play-btn:hover {
+      background: #000;
+      color: #ff0000;
+    }
+
+    .marquee-bar {
+      background: #ff0000;
+      color: #fff;
+      padding: 8px 0;
+      font-weight: 900;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-bar span {
+      display: inline-block;
+      animation: marquee 20s linear infinite;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    footer {
+      background: #000;
+      color: #fff;
+      padding: 20px 30px;
+      margin-top: 60px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer .logo {
+      font-weight: 900;
+      font-size: 1rem;
+      color: #ff0000;
+      font-family: 'Arial Black', sans-serif;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Fun Free<br><span>Web Games</span><br>Hub</h1>
+    <p>// No downloads. No accounts. No nonsense. Just pure browser-based gaming excellence.</p>
+  </header>
+
+  <div class="marquee-bar">
+    <span>★ MINESWEEPER ★ WORDLE ★ SUDOKU ★ CHESS ★ 2048 ★ TETRIS ★ SOLITAIRE ★ SNAKE ★ CROSSWORD ★ MAHJONG ★ PAC-MAN ★ SCRABBLE ★ TYPERACER ★ MEMORY ★ PINBALL ★</span>
+  </div>
+
+  <nav>
+    <a href="#puzzle">Puzzle</a>
+    <a href="#strategy">Strategy</a>
+    <a href="#arcade">Arcade</a>
+    <a href="#word">Word</a>
+    <a href="#classic">Classic</a>
+  </nav>
+
+  <main>
+    <p class="section-label">// All Games — Free — Browser-Based</p>
+    <h2>Select Your Game</h2>
+
+    <div class="game-grid">
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">01</span>
+          <h3>Minesweeper</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Puzzle</span>
+          <p class="game-desc">Uncover hidden mines using logic and probability. Flag all mines to win.</p>
+          <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">02</span>
+          <h3>Wordle</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Word</span>
+          <p class="game-desc">Guess the 5-letter word in 6 attempts. New word every day. The original.</p>
+          <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">03</span>
+          <h3>Sudoku</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Puzzle</span>
+          <p class="game-desc">Fill the 9×9 grid so every row, column, and 3×3 box has digits 1–9.</p>
+          <a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">04</span>
+          <h3>Chess</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Strategy</span>
+          <p class="game-desc">Play vs AI or challenge players worldwide. The ultimate strategy game.</p>
+          <a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">05</span>
+          <h3>2048</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Puzzle</span>
+          <p class="game-desc">Slide and merge numbered tiles to reach the 2048 tile. Dangerously addictive.</p>
+          <a href="https://2048game.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">06</span>
+          <h3>Tetris</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Arcade</span>
+          <p class="game-desc">The legendary block-stacking game. Clear lines, beat your high score.</p>
+          <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">07</span>
+          <h3>Solitaire</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Classic</span>
+          <p class="game-desc">Classic Klondike solitaire. Stack cards in suit sequences to win.</p>
+          <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">08</span>
+          <h3>Snake</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Arcade</span>
+          <p class="game-desc">Guide your snake to eat food and grow. Avoid walls and your own tail.</p>
+          <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">09</span>
+          <h3>Crossword</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Word</span>
+          <p class="game-desc">Fill in the grid with words matching the clues. Classic newspaper fun.</p>
+          <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">10</span>
+          <h3>Mahjong</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Strategy</span>
+          <p class="game-desc">Match and remove pairs of tiles to clear the board. Ancient tile game.</p>
+          <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">11</span>
+          <h3>Pac-Man</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Arcade</span>
+          <p class="game-desc">Eat all dots, avoid ghosts, eat power pellets for a fighting chance.</p>
+          <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">12</span>
+          <h3>Scrabble</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Word</span>
+          <p class="game-desc">Build high-scoring words on the board using your letter tiles.</p>
+          <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">13</span>
+          <h3>TypeRacer</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Skill</span>
+          <p class="game-desc">Race other players by typing quotes as fast as possible. Test your WPM.</p>
+          <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">14</span>
+          <h3>Memory Match</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Classic</span>
+          <p class="game-desc">Flip and match cards by memory. Simple premise, challenging execution.</p>
+          <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-header">
+          <span class="game-number">15</span>
+          <h3>Pinball</h3>
+        </div>
+        <div class="game-card-body">
+          <span class="game-tag">Arcade</span>
+          <p class="game-desc">Keep the ball in play with flippers. Hit targets, rack up points.</p>
+          <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-btn">→ Play Now</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="logo">FFWG Hub</div>
+    <div>All games are external links. No cookies. No tracking. No BS.</div>
+    <div>v1.0 — BRUTALIST EDITION</div>
+  </footer>
+
+</body>
+</html>

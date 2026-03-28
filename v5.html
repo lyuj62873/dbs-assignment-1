@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun Free Web Games Hub</title>
+  <style>
+    /* === VAPORWAVE / SYNTHWAVE STYLE === */
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700;900&family=Major+Mono+Display&display=swap');
+
+    :root {
+      --pink: #ff71ce;
+      --blue: #01cdfe;
+      --purple: #b967ff;
+      --yellow: #fffb96;
+      --teal: #05ffa1;
+      --bg-dark: #0d0221;
+      --bg-mid: #1a0533;
+      --grid-color: rgba(185,103,255,0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #fff;
+      font-family: 'Raleway', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Perspective grid floor */
+    .grid-bg {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50vh;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(400px) rotateX(60deg);
+      transform-origin: bottom center;
+      opacity: 0.4;
+    }
+
+    /* Gradient sky */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(
+        180deg,
+        #0d0221 0%,
+        #1a0533 30%,
+        #330066 55%,
+        #660033 75%,
+        #220011 100%
+      );
+      z-index: -1;
+    }
+
+    /* Sun */
+    .sun {
+      position: relative;
+      margin: 0 auto;
+      width: 200px;
+      height: 100px;
+      border-radius: 50% 50% 0 0;
+      background: linear-gradient(180deg, var(--yellow) 0%, var(--pink) 50%, var(--purple) 100%);
+      overflow: hidden;
+      box-shadow: 0 0 60px var(--pink), 0 0 120px var(--purple);
+    }
+
+    .sun::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to top,
+        var(--bg-dark) 0px,
+        var(--bg-dark) 8px,
+        transparent 8px,
+        transparent 20px
+      );
+      background-position: bottom;
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 20px 30px;
+    }
+
+    .vw-label {
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 8px;
+      color: var(--teal);
+      text-shadow: 0 0 10px var(--teal);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    header h1 {
+      font-family: 'Major Mono Display', monospace;
+      font-size: clamp(1.8rem, 5vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--pink), var(--blue), var(--purple), var(--yellow));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 20px rgba(255,113,206,0.5));
+    }
+
+    header p {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .chrome-text {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 900;
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      background: linear-gradient(180deg, #fff 0%, var(--blue) 40%, var(--purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      margin: 16px 0;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
+
+    .neon-divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--pink), var(--blue), var(--purple), transparent);
+      margin: 30px 0;
+      box-shadow: 0 0 10px var(--pink);
+    }
+
+    .section-label {
+      text-align: center;
+      font-family: 'Major Mono Display', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 6px;
+      color: var(--yellow);
+      text-shadow: 0 0 10px var(--yellow);
+      margin-bottom: 24px;
+    }
+
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .game-card {
+      background: rgba(26, 5, 51, 0.8);
+      border: 1px solid;
+      border-image: linear-gradient(135deg, var(--pink), var(--blue)) 1;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink), var(--blue), var(--purple));
+    }
+
+    .game-card:nth-child(3n) { --accent: var(--teal); }
+    .game-card:nth-child(3n+1) { --accent: var(--pink); }
+    .game-card:nth-child(3n+2) { --accent: var(--blue); }
+
+    .card-top {
+      background: rgba(185,103,255,0.1);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 0 8px var(--pink));
+    }
+
+    .card-title-group { flex: 1; }
+
+    .card-tag {
+      font-size: 0.55rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent, var(--pink));
+      text-shadow: 0 0 6px var(--accent, var(--pink));
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .game-card h3 {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .card-body {
+      padding: 16px 18px 20px;
+    }
+
+    .game-desc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .play-link {
+      display: inline-block;
+      color: var(--accent, var(--pink));
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px var(--accent, var(--pink));
+      position: relative;
+    }
+
+    .play-link::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--accent, var(--pink));
+      box-shadow: 0 0 6px var(--accent, var(--pink));
+      transform: scaleX(0.3);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+
+    .play-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .play-link::before {
+      content: '▶ ';
+    }
+
+    .mountains {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      opacity: 0.6;
+    }
+
+    .mountain {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      margin: 0 -10px;
+    }
+
+    .mountain-1 { border-width: 0 60px 100px 60px; border-color: transparent transparent #1a0533 transparent; }
+    .mountain-2 { border-width: 0 80px 130px 80px; border-color: transparent transparent #220044 transparent; }
+    .mountain-3 { border-width: 0 50px 90px 50px; border-color: transparent transparent #110022 transparent; }
+    .mountain-4 { border-width: 0 70px 110px 70px; border-color: transparent transparent #1a0533 transparent; }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid rgba(255,113,206,0.3);
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    footer .glow {
+      color: var(--pink);
+      text-shadow: 0 0 10px var(--pink);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid-bg"></div>
+
+  <header>
+    <div class="sun"></div>
+    <span class="vw-label">// aesthetic gaming portal //</span>
+    <h1>Fun Free<br>Web Games<br>Hub</h1>
+    <span class="chrome-text">Play. Vibe. Repeat.</span>
+    <p>No downloads &nbsp;·&nbsp; No payments &nbsp;·&nbsp; Pure vibes</p>
+  </header>
+
+  <div class="mountains">
+    <div class="mountain mountain-3"></div>
+    <div class="mountain mountain-1"></div>
+    <div class="mountain mountain-2"></div>
+    <div class="mountain mountain-4"></div>
+    <div class="mountain mountain-1"></div>
+  </div>
+
+  <main>
+    <div class="neon-divider"></div>
+    <div class="section-label">// select your game //</div>
+
+    <div class="game-grid">
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">💣</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>Minesweeper</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Logic-based mine detection. Flag all hidden mines to win. Available in beginner through expert difficulty.</p>
+          <a href="https://minesweeper.online/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🔤</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Wordle</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Guess the five-letter word in six attempts. Fresh daily puzzle from The New York Times.</p>
+          <a href="https://www.nytimes.com/games/wordle/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🔢</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>Sudoku</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Fill the 9×9 grid with digits 1–9 in each row, column, and box. Pure logical deduction.</p>
+          <a href="https://sudoku.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">♟️</span>
+          <div class="card-title-group">
+            <span class="card-tag">Strategy</span>
+            <h3>Chess</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Battle AI or live opponents on the world's premier chess platform. From bullet to classical.</p>
+          <a href="https://www.chess.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🧮</span>
+          <div class="card-title-group">
+            <span class="card-tag">Puzzle</span>
+            <h3>2048</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Slide and merge numbered tiles. Reach 2048 and beyond. Satisfaction and frustration combined.</p>
+          <a href="https://2048game.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🟦</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Tetris</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">The official Tetris game in your browser. Stack tetrominoes, clear lines, climb the leaderboard.</p>
+          <a href="https://play.tetris.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🃏</span>
+          <div class="card-title-group">
+            <span class="card-tag">Classic</span>
+            <h3>Solitaire</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Classic Klondike. Move cards to foundation piles by suit. A timeless browser companion.</p>
+          <a href="https://www.solitairebliss.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🐍</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Snake</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Eat, grow, survive. Guide your snake through the arena without colliding with yourself.</p>
+          <a href="https://www.crazygames.com/game/snake" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">📰</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Crossword</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Classic grid-filling word puzzle. Solve clues across and down to complete the board.</p>
+          <a href="https://play.dictionary.com/games/easy-crossword" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🀄</span>
+          <div class="card-title-group">
+            <span class="card-tag">Strategy</span>
+            <h3>Mahjong</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Ancient tile-matching game. Pair and remove tiles until the board is clear.</p>
+          <a href="https://www.crazygames.com/t/mahjong" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">👾</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Pac-Man</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Navigate the maze, chomp dots, flee ghosts. The ultimate retro arcade experience.</p>
+          <a href="https://www.crazygames.com/game/pacman" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🔡</span>
+          <div class="card-title-group">
+            <span class="card-tag">Word</span>
+            <h3>Scrabble</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Form high-scoring words on the board. Leverage bonus squares to outmanoeuvre rivals.</p>
+          <a href="https://playscrabble.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">⌨️</span>
+          <div class="card-title-group">
+            <span class="card-tag">Skill</span>
+            <h3>TypeRacer</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Race real players by typing quoted passages. Track WPM, improve accuracy over time.</p>
+          <a href="https://play.typeracer.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🎴</span>
+          <div class="card-title-group">
+            <span class="card-tag">Classic</span>
+            <h3>Memory Match</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Flip cards and find all matching pairs using memory. A perfect brain warm-up exercise.</p>
+          <a href="https://memorymatching.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="card-top">
+          <span class="card-icon">🎱</span>
+          <div class="card-title-group">
+            <span class="card-tag">Arcade</span>
+            <h3>Pinball</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="game-desc">Flip to keep the ball alive, trigger bonuses, and rack up massive scores.</p>
+          <a href="https://www.247pinball.com/" target="_blank" rel="noopener" class="play-link">Play Now</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="neon-divider" style="margin-top:40px;"></div>
+  </main>
+
+  <footer>
+    <span class="glow">Fun Free Web Games Hub</span> &nbsp;·&nbsp; All Games External &nbsp;·&nbsp; No Tracking &nbsp;·&nbsp; V5 Vaporwave Edition
+  </footer>
+
+</body>
+</html>
